@@ -1,5 +1,17 @@
 {% extends 'layout.html' %}
 {% block title %}Index{% endblock %}
 {% block main %}
-    <h1>I AM COl</h1>
+    <div>
+        <form class="char-search" methods="GET">
+            <label>Character Name</label>
+            <input type="text" name="char-name">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="char-results">
+        <p>SupaFarma</p>
+        <p>Online</p>
+        <p>More stats</p>
+        <p>Track session</p>
+    </div>
 {% endblock %}
