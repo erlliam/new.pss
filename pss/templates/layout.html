@@ -12,15 +12,18 @@
     {% endblock %}
 </head>
 <body>
-    <header>
-        <a href="/">Planetside Search</a>
-        <nav>
-            <a href="/">About</a>
-            <a href="/">Characters</a>
-            <a href="/">Somthing</a>
-        </nav>
+    <header id="header">
+        <button id="nav-min">Minimize</button>
+        <div id="he-di">
+            <a class="he-lo" href="/">Planetside Search</a>
+            <nav class="he-na">
+                <a href="/">Home</a>
+                <a href="/character">Characters</a>
+                <a href="/outfit">Outfits</a>
+            </nav>
+        </div>
     </header>
-    <main>
+    <main id="main">
         {% block main %}
         {% endblock %}
     </main>

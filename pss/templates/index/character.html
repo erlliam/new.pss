@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block title %}Index{% endblock %}
+{% block main %}
+    <div class="main-div">
+        <div class="search">
+            <form methods="GET">
+                <label>Character Name</label>
+                <input type="text" name="name" placeholder="Name" value={{ char_name}}>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="results">
+            <h2 class="name">SupaFarma</h2>
+            <div class="general">
+                <h3 class="status">Status: Offline</h3>
+                <h3 class="level">Battlerank: 69</h3>
+                <h3 class="prestige">Prestige: 0</h3>
+                <h3 class="time">Playtime: 2 hours</h3>
+            </div>
+            <div class="stats">
+                <h3 class="kills">Kills: 100</h3>
+                <h3 class="deaths">Deaths: 49</h3>
+                <h3 class="kd">K/D: 1</h3>
+                <h3 class="kpm">KPM: 2</h3>
+            </div>
+        </div>
+        <div class="session">
+            <h2>Session Time: 00:00:00</h2>
+        </div>
+    </div>
+{% endblock %}

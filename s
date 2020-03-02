@@ -25,7 +25,7 @@ set shiftwidth=4
 set softtabstop=4
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set tabstop=4
-set window=53
+set window=55
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -35,16 +35,23 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +1 pss/__init__.py
-badd +7 pss/views/index.py
-badd +1 pss/templates/index/index.html
-badd +29 pss/templates/layout.html
-badd +3 pss/static/css/style.css
-badd +1 pss/static/js/main.js
+badd +4 pss/__init__.py
+badd +14 pss/views/index.py
+badd +7 pss/templates/index/index.html
+badd +16 pss/templates/layout.html
+badd +1 pss/static/css/style.css
+badd +18 pss/static/js/main.js
+badd +19 colors
+badd +1 index
+badd +14 pss/templates/index/outfit.html
+badd +1 te/ind
+badd +28 pss/templates/index/character.html
+badd +1 pss/daybreak_api.py
+badd +0 okdd
 argglobal
 silent! argdel *
 $argadd pss/__init__.py
-edit pss/templates/index/index.html
+edit pss/daybreak_api.py
 set splitbelow splitright
 wincmd _ | wincmd |
 split
@@ -57,8 +64,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 25 + 27) / 54)
-exe '2resize ' . ((&lines * 26 + 27) / 54)
+exe '1resize ' . ((&lines * 27 + 28) / 56)
+exe '2resize ' . ((&lines * 26 + 28) / 56)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -94,8 +101,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'htmldjango'
-setlocal filetype=htmldjango
+if &filetype != 'python'
+setlocal filetype=python
 endif
 setlocal fixendofline
 setlocal foldcolumn=0
@@ -159,8 +166,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'htmldjango'
-setlocal syntax=htmldjango
+if &syntax != 'python'
+setlocal syntax=python
 endif
 setlocal tabstop=4
 setlocal tagcase=
@@ -179,15 +186,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 7 - ((5 * winheight(0) + 12) / 25)
+let s:l = 40 - ((26 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-7
-normal! 019|
+40
+normal! 026|
 wincmd w
 argglobal
-if bufexists('pss/static/css/style.css') | buffer pss/static/css/style.css | else | edit pss/static/css/style.css | endif
+if bufexists('okdd') | buffer okdd | else | edit okdd | endif
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -222,8 +229,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'css'
-setlocal filetype=css
+if &filetype != ''
+setlocal filetype=
 endif
 setlocal fixendofline
 setlocal foldcolumn=0
@@ -287,8 +294,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'css'
-setlocal syntax=css
+if &syntax != ''
+setlocal syntax=
 endif
 setlocal tabstop=4
 setlocal tagcase=
@@ -307,16 +314,16 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 47 - ((15 * winheight(0) + 13) / 26)
+let s:l = 13 - ((12 * winheight(0) + 13) / 26)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-47
-normal! 024|
+13
+normal! 023|
 wincmd w
 2wincmd w
-exe '1resize ' . ((&lines * 25 + 27) / 54)
-exe '2resize ' . ((&lines * 26 + 27) / 54)
+exe '1resize ' . ((&lines * 27 + 28) / 56)
+exe '2resize ' . ((&lines * 26 + 28) / 56)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
