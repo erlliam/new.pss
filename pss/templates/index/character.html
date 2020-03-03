@@ -5,25 +5,26 @@
         <div class="search">
             <form methods="GET">
                 <label>Character Name</label>
-                <input type="text" name="name" placeholder="Name" value={{ char_name}}>
+                <input type="text" name="name" placeholder="Name"
+                value={{ request.args.get('name', '') }}>
                 <button type="submit">Search</button>
             </form>
         </div>
+        {% if char %}
         <div class="results">
-            <h2 class="name">SupaFarma</h2>
-            <div class="general">
-                <h3 class="status">Status: Offline</h3>
-                <h3 class="level">Battlerank: 69</h3>
-                <h3 class="prestige">Prestige: 0</h3>
-                <h3 class="time">Playtime: 2 hours</h3>
-            </div>
-            <div class="stats">
-                <h3 class="kills">Kills: 100</h3>
-                <h3 class="deaths">Deaths: 49</h3>
-                <h3 class="kd">K/D: 1</h3>
-                <h3 class="kpm">KPM: 2</h3>
-            </div>
+                <h2 class="name">{{ char.name }}</h2>
+                <h3 class="status">Status: {{ char.status }}</h3>
+                <h3 class="faction">Faction: {{ char.faction }}</h3>
+                <h3 class="char-id">Character ID: {{ char.char_id }}</h3>
+                <h3 class="join-date">Joined: {{ char.join_date }}</h3>
+                <h3 class="time">Time Played: {{ char.time_played }} hours</h3>
+                <h3 class="level">Battlerank: {{ char.level }}</h3>
+                <h3 class="prestige">Prestige: {{ char.prestige }}</h3>
+                <h3 class="kills">Kills: {{ char.kills }}</h3>
+                <h3 class="deaths">Deaths: {{ char.deaths }}</h3>
+                <h3 class="kd-ratio">K/D: {{ char.kd_ratio }}</h3>
         </div>
+        {% endif %}
         <div class="session">
             <h2>Session Time: 00:00:00</h2>
         </div>

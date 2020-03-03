@@ -14,14 +14,18 @@ class Character():
         self.faction_id = faction_id
         self.faction = faction
         self.join_date = join_date
-        self.time_played = time_played
+        self.time_played = int(int(time_played)/60) # min to h and drop decimal
         self.level = level
         self.prestige = prestige
         self.status = status
         self.kills = kills
         self.deaths = deaths
-        self.kd_ratio = int(kills)/int(deaths)
-        print(self.kd_ratio)
+        try:
+            self.kd_ratio = int(kills)/int(deaths)
+        except ValueError:
+            self.kd_ratio = 'N/A'
+        except ZeroDivisionError:
+            self.kd_ratio = int(kills)/1
 
 
 def get_character(name):
@@ -31,18 +35,20 @@ def get_character(name):
 
     if result_found:
         result = result['character_list'][0]
-
+        # Return empty dictionary to deal with the nested dictionaries.
+        # This avoids the using .get on None
         char_id = result.get('character_id')
-        name = result.get('name').get('first')
+        name = result.get('name', {}).get('first')
         faction_id = result.get('faction_id')
-        faction = result.get('faction').get('code_tag')
-        join_date = result.get('times').get('creation_date')
-        time_played = result.get('times').get('minutes_played')
-        level = result.get('battle_rank').get('value')
+        faction = result.get('faction', {}).get('code_tag')
+        join_date = result.get('times', {}).get('creation_date')
+        time_played = result.get('times', {}).get('minutes_played')
+        level = result.get('battle_rank', {}).get('value')
         prestige = result.get('prestige_level')
-        status = result.get('online').get('online_status')
-        kills = result.get('stats').get('kills').get('all_time')
-        deaths = result.get('stats').get('deaths').get('all_time')
+        status = result.get('online', {}).get('online_status')
+        status = 'Offline' if status == '0' else 'Online'
+        kills = result.get('stats', {}).get('kills', {}).get('all_time', 'N/A')
+        deaths = result.get('stats', {}).get('deaths', {}).get('all_time', 'N/A')
 
         return Character(char_id, name, faction_id, faction, join_date,
                          time_played, level, prestige, status, kills, deaths)

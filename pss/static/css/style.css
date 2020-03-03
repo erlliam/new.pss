@@ -86,6 +86,9 @@ main {
         "result result session session";
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
+    grid-gap: 30px;
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 .search {
@@ -137,32 +140,16 @@ main {
     grid-area: result;
     background-color: var(--no-co);
     border-radius: 10px;
-    margin: 30px;
-    margin-right: 0;
-    padding-right: 30px;
     display: grid;
-    grid-template-areas:
-        "name name" 
-        "general stats"
-        "general stats";
-    grid-template-rows: 100px 1fr
 }
 
 .name {
-    grid-area: name;
     align-self: center;
     justify-self: center;
-}
-.general {
-    margin-left: 30px;
-}
-.stats {
-    margin-left: 30px;
 }
 
 .session {
     grid-area: session;
     background-color: var(--di-co);
     border-radius: 10px;
-    margin: 30px;
 }

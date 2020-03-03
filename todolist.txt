@@ -1,0 +1,13 @@
+Add "result not found" when result isn't found!
+COOKIES FOR maximized/minimized state
+Create layout for results
+Start working on the session part:
+    Write the javascript websocket stuff
+    Think of a layout and what events I plan to track
+    
+FIND A BETTER FLOW ENVIORNMENT:
+    Vim auto save session on exit
+        mks! s
+    Vim auto load session on start
+        vim -S s
+
