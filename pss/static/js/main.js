@@ -31,22 +31,46 @@ function navLogic() {
     }
 }
 
-function characterIdToName(characterId) {
-    console.log('1');
-    xhttp = new XMLHttpRequest();
-    xhttp.open("GET",
-    `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?character_id=${characterId}&c:show=name.first,faction_id,battle_rank.value`);
-    xhttp.send();
-    xhttp.onload = function() {
-        let characterObject = JSON.parse(xhttp.response);
-        characterObject.character_list
+let character = {};
 
-        console.log(characterObject);
+function searchCharacter(name) {
+    let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
+
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            let response = JSON.parse(request.response);
+            if (response.returned) {
+                response = response.character_list[0]; // 
+                character = {
+                    name: response.name.first,
+                    character_id: response.character_id,
+                    faction: response.faction.code_tag,
+                    faction_id: response.faction_id,
+                    join_date: response.times.creation_date,
+                    time_played: response.times.minutes_played,
+                    level: response.battle_rank.value,
+                    prestige: response.prestige_level,
+                    "status": response.online.online_status,
+                };
+
+                try {
+                    character.kills = response.stats.kills.all_time;
+                    character.deaths = response.stats.deaths.all_time;
+                    character.kd = kills/deaths;
+                } catch(e) {
+                    if (e instanceof TypeError) {
+                        character.kills = "N/A";
+                        character.deaths = "N/A";
+                        character.kd = "N/A";
+                    }
+                }
+            }
+        }
     }
+    request.open("GET", url);
+    request.send(null);
 }
-
-characterIdToName('5428013610465154849');
-
 
 function characterSession() {
     let webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
@@ -77,9 +101,12 @@ function characterSession() {
         webSocket.send(JSON.stringify(allDeathsEmerald));
 
         webSocket.onmessage = function(message) {
-            message = JSON.parse(message.data)
+            message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
-                console.log(message.payload);
+                message = message.payload;
+                let attacker = message.attacker_character_id;
+                let died = message.character_id;
+                console.log(attacker, died);
             }
         }
         /*

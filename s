@@ -36,17 +36,17 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 pss/__init__.py
-badd +13 pss/views/index.py
+badd +15 pss/views/index.py
 badd +7 pss/templates/index/index.html
 badd +16 pss/templates/layout.html
-badd +147 pss/static/css/style.css
-badd +18 pss/static/js/main.js
+badd +155 pss/static/css/style.css
+badd +34 pss/static/js/main.js
 badd +19 colors
 badd +14 pss/templates/index/outfit.html
-badd +15 pss/templates/index/character.html
+badd +29 pss/templates/index/character.html
 badd +17 pss/daybreak_api.py
-badd +4 broken_url.txt
-badd +5 todolist.txt
+badd +2 broken_url.txt
+badd +20 todolist.txt
 argglobal
 silent! argdel *
 $argadd pss/__init__.py
@@ -63,8 +63,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 27 + 27) / 54)
-exe '2resize ' . ((&lines * 24 + 27) / 54)
+exe '1resize ' . ((&lines * 26 + 27) / 54)
+exe '2resize ' . ((&lines * 25 + 27) / 54)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -185,15 +185,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
+let s:l = 20 - ((19 * winheight(0) + 13) / 26)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 047|
+20
+normal! 0
 wincmd w
 argglobal
-if bufexists('pss/views/index.py') | buffer pss/views/index.py | else | edit pss/views/index.py | endif
+if bufexists('pss/static/js/main.js') | buffer pss/static/js/main.js | else | edit pss/static/js/main.js | endif
 setlocal keymap=
 setlocal noarabic
 setlocal autoindent
@@ -228,8 +228,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'python'
-setlocal filetype=python
+if &filetype != 'javascript'
+setlocal filetype=javascript
 endif
 setlocal fixendofline
 setlocal foldcolumn=0
@@ -293,8 +293,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'python'
-setlocal syntax=python
+if &syntax != 'javascript'
+setlocal syntax=javascript
 endif
 setlocal tabstop=4
 setlocal tagcase=
@@ -313,16 +313,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 19 - ((18 * winheight(0) + 12) / 24)
+let s:l = 34 - ((4 * winheight(0) + 12) / 25)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-19
-normal! 0
+34
+normal! 010|
 wincmd w
-2wincmd w
-exe '1resize ' . ((&lines * 27 + 27) / 54)
-exe '2resize ' . ((&lines * 24 + 27) / 54)
+exe '1resize ' . ((&lines * 26 + 27) / 54)
+exe '2resize ' . ((&lines * 25 + 27) / 54)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf

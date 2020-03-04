@@ -151,6 +151,7 @@ main {
 
 .session {
     grid-area: session;
+    position: relative;
 }
 #session-button {
     box-sizing: border-box;
@@ -158,4 +159,8 @@ main {
     height: 30px;
     padding: 0;
     border: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
