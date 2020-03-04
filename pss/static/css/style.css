@@ -7,7 +7,6 @@
     --no-co: #363636;
     --li-co: #222222;
     --da-co: #0D0D0D;
-    --di-co: #363636;
     --te-se: #F0F0F0;
 }
 
@@ -112,35 +111,37 @@ main {
     font-size: 1.2em;
 }
 
-.search > form > input {
-    grid-area: input;
+.search > form > input,
+.search > form > button {
     border: 1px solid;
-    border-right-width: 0;
-    border-radius: 5px 0 0 5px;
     padding: 10px 8px;
     background-color: var(--no-co);
     color: var(--te-se);
     font-size: 1.1em;
+}
+
+.search > form > input {
+    grid-area: input;
+    border-right-width: 0;
+    border-radius: 5px 0 0 5px;
 }
 .search > form > button{
     grid-area: button;
-    border: 1px solid;
     border-radius: 0 5px 5px 0;
-    padding: 10px 8px;
-    background-color: var(--no-co);
-    color: var(--te-se);
-    font-size: 1.1em;
 }
 .search > button:hover {
     background-color: #1C0E10;
-    
+}
+
+.results,
+.session {
+    background-color: var(--no-co);
+    border-radius: 10px;
+    padding: 30px;
 }
 
 .results {
     grid-area: result;
-    background-color: var(--no-co);
-    border-radius: 10px;
-    display: grid;
 }
 
 .name {
@@ -150,6 +151,11 @@ main {
 
 .session {
     grid-area: session;
-    background-color: var(--di-co);
-    border-radius: 10px;
+}
+#session-button {
+    box-sizing: border-box;
+    width: 150px;
+    height: 30px;
+    padding: 0;
+    border: 0;
 }

@@ -10,4 +10,13 @@ FIND A BETTER FLOW ENVIORNMENT:
         mks! s
     Vim auto load session on start
         vim -S s
-
+SESSION
+    Kill/death
+        Name x
+        Battle_rank x
+        K/D
+        Faction x
+        Class
+        Headshot
+        Weapon used
+        Date/time???
