@@ -57,7 +57,7 @@ function searchCharacter(name) {
                 try {
                     character.kills = response.stats.kills.all_time;
                     character.deaths = response.stats.deaths.all_time;
-                    character.kd = kills/deaths;
+                    character.kd = character.kills/character.deaths;
                 } catch(e) {
                     if (e instanceof TypeError) {
                         character.kills = "N/A";
@@ -66,10 +66,57 @@ function searchCharacter(name) {
                     }
                 }
             }
+            // Callback to set insert values;
         }
     }
     request.open("GET", url);
     request.send(null);
+}
+// GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
+function sessionDataGatherer(payload) {
+    console.log('o');
+
+    if (payload.attacker_character_id == character.character_id) { // kill
+        console.log({
+            attacker: {
+                name: character.name,
+                level: character.level,
+                kd: character.kd,
+                faction: character.faction
+            },
+            victim: {
+                name: 'find'
+            }
+        });
+    }
+}
+
+function makeKillElement(attacker, victim) {
+    // ooooo
+}
+
+function startSession() {
+    let webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
+
+    webSocket.onopen = function() {
+        let deathsCommand = {
+            service: "event",
+            action: "subscribe",
+            characters: [character.character_id],
+            eventNames: ["Death"]
+        }
+
+        webSocket.send(JSON.stringify(deathsCommand));
+
+        webSocket.onmessage = function(message) {
+            message = JSON.parse(message.data);
+            if (message.hasOwnProperty("payload")) {
+                sessionDataGatherer(message.payload);
+            } else {
+                console.log(message);
+            }
+        }
+    }
 }
 
 function characterSession() {

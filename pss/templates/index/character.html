@@ -10,21 +10,19 @@
                 <button type="submit">Search</button>
             </form>
         </div>
-        {% if char %}
         <div class="results">
-                <h2 class="name">{{ char.name }}</h2>
-                <h3 class="status">Status: {{ char.status }}</h3>
-                <h3 class="faction">Faction: {{ char.faction }}</h3>
-                <h3 class="char-id">Character ID: {{ char.char_id }}</h3>
-                <h3 class="join-date">Joined: {{ char.join_date }}</h3>
-                <h3 class="time">Time Played: {{ char.time_played }} hours</h3>
-                <h3 class="level">Battlerank: {{ char.level }}</h3>
-                <h3 class="prestige">Prestige: {{ char.prestige }}</h3>
-                <h3 class="kills">Kills: {{ char.kills }}</h3>
-                <h3 class="deaths">Deaths: {{ char.deaths }}</h3>
-                <h3 class="kd-ratio">K/D: {{ char.kd_ratio }}</h3>
+                <h2 class="name"></h2>
+                <h3 class="status">Status: </h3>
+                <h3 class="faction">Faction: </h3>
+                <h3 class="char-id">Character ID: </h3>
+                <h3 class="join-date">Joined: </h3>
+                <h3 class="time">Time Played: </h3>
+                <h3 class="level">Battlerank: </h3>
+                <h3 class="prestige">Prestige: </h3>
+                <h3 class="kills">Kills: </h3>
+                <h3 class="deaths">Deaths: </h3>
+                <h3 class="kd-ratio">K/D: </h3>
         </div>
-        {% endif %}
         <div class="session">
             <button id="session-button">Start Session</button>
             <div class="session-overall">
