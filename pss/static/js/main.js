@@ -40,17 +40,6 @@ let character = {
     exists: false
 };
 
-function populateResultsDiv() {
-    let results = document.getElementById("results");
-    let children = results.childNodes;
-
-    Object.keys(character).forEach(function(key) {
-        :
-        console.log(`Key: ${key}, Value: ${character[key]}`);
-    });
-
-    // Add information from character object to the results div
-}
 
 function initializeCharacter(name) { // we only ever initialize once... 
     let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
@@ -87,6 +76,28 @@ function initializeCharacter(name) { // we only ever initialize once...
     });
 }
 
+
+function populateResultsDiv() {
+    let results = document.getElementById("results");
+    let children = results.children;
+
+    for (let stat in character) {
+        let child = children.namedItem(stat);
+        if (child) {
+            console.log(character[stat]);
+            child.innerHTML += character[stat];
+        }
+    }
+    
+    // Object.keys(character).forEach(function(key) {
+    //     
+    //     console.log(`Key: ${key}, Value: ${character[key]}`);
+    // });
+
+    // Add information from character object to the results div
+}
+
+
 function gatherKillData(payload) {
     let attacker_weapon = payload.attacker_weapon_id;
     let attacker_loadout = payload.attacker_loadout_id;
@@ -119,6 +130,7 @@ function sessionDataGatherer(payload) {
     }
 }
 
+
 function makeKillElement(attacker, victim) {
     // ooooo
 }
@@ -146,6 +158,7 @@ function startSession() {
         }
     }
 }
+
 
 function characterSession() {
     let webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");

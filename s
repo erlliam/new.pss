@@ -67,8 +67,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 27 + 28) / 56)
-exe '2resize ' . ((&lines * 25 + 28) / 56)
+exe '1resize ' . ((&lines * 27 + 27) / 54)
+exe '2resize ' . ((&lines * 23 + 27) / 54)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -189,12 +189,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 14 - ((12 * winheight(0) + 13) / 27)
+let s:l = 19 - ((17 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-14
-normal! 030|
+19
+normal! 035|
 wincmd w
 argglobal
 if bufexists('pss/static/css/style.css') | buffer pss/static/css/style.css | else | edit pss/static/css/style.css | endif
@@ -317,15 +317,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 12) / 25)
+let s:l = 1 - ((0 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 03|
 wincmd w
-exe '1resize ' . ((&lines * 27 + 28) / 56)
-exe '2resize ' . ((&lines * 25 + 28) / 56)
+exe '1resize ' . ((&lines * 27 + 27) / 54)
+exe '2resize ' . ((&lines * 23 + 27) / 54)
 tabnext
 edit pss/static/js/main.js
 set splitbelow splitright
@@ -456,13 +456,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 48 - ((6 * winheight(0) + 27) / 54)
+let s:l = 88 - ((25 * winheight(0) + 26) / 52)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-48
-normal! 09|
-tabnext 1
+88
+normal! 029|
+tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
