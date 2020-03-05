@@ -15,12 +15,11 @@ function navLogic() {
     header.classList.toggle("header-nav");
     main.classList.toggle("main-nav");
     minimize.classList.toggle("minimize-nav");
+    visible = !visible;
     if (visible) {
-        minimize.innerHTML = "Maximize";
-        visible = false;
-    } else {
         minimize.innerHTML = "Minimize";
-        visible = true;
+    } else {
+        minimize.innerHTML = "Maximize";
     }
 }
 
@@ -72,6 +71,10 @@ function initializeCharacter(name) { // we only ever initialize once...
             }
         }
     });
+}
+
+function gatherKillData() {
+    
 }
 
 // GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
