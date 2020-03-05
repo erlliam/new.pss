@@ -31,50 +31,59 @@ function navLogic() {
     }
 }
 
-let character = {};
-
-function searchCharacter(name) {
-    let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
-
+function get(url, callback) {
     let request = new XMLHttpRequest();
+    request.open("GET", url);
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
-            let response = JSON.parse(request.response);
-            if (response.returned) {
-                response = response.character_list[0]; // 
-                character = {
-                    name: response.name.first,
-                    character_id: response.character_id,
-                    faction: response.faction.code_tag,
-                    faction_id: response.faction_id,
-                    join_date: response.times.creation_date,
-                    time_played: response.times.minutes_played,
-                    level: response.battle_rank.value,
-                    prestige: response.prestige_level,
-                    "status": response.online.online_status,
-                };
+            callback.apply(request);
+        }
+    };
+    request.send();
+}
 
-                try {
-                    character.kills = response.stats.kills.all_time;
-                    character.deaths = response.stats.deaths.all_time;
-                    character.kd = character.kills/character.deaths;
-                } catch(e) {
-                    if (e instanceof TypeError) {
-                        character.kills = "N/A";
-                        character.deaths = "N/A";
-                        character.kd = "N/A";
-                    }
+
+let character = {
+    exists: false
+};
+
+function initializeCharacter(name) { // we only ever initialize once... 
+    let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
+    get(url, function() {
+        let response = JSON.parse(this.response);
+        if (response.returned) {
+            let rawCharacter = response.character_list[0];
+            character = {
+                exists: true,
+                name: rawCharacter.name.first,
+                character_id: rawCharacter.character_id,
+                faction: rawCharacter.faction.code_tag,
+                faction_id: rawCharacter.faction_id,
+                join_date: rawCharacter.times.creation_date,
+                time_played: rawCharacter.times.minutes_played,
+                level: rawCharacter.battle_rank.value,
+                prestige: rawCharacter.prestige_level,
+                "status": rawCharacter.online.online_status,
+            };
+
+            try {
+                character.kills = rawCharacter.stats.kills.all_time;
+                character.deaths = rawCharacter.stats.deaths.all_time;
+                character.kd = character.kills/character.deaths;
+            } catch(error) {
+                if (error instanceof TypeError) {
+                    character.kills = "N/A";
+                    character.deaths = "N/A";
+                    character.kd = "N/A";
                 }
             }
-            // Callback to set insert values;
         }
-    }
-    request.open("GET", url);
-    request.send(null);
+    });
 }
+
 // GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
 function sessionDataGatherer(payload) {
-    console.log('o');
+    console.log(payload);
 
     if (payload.attacker_character_id == character.character_id) { // kill
         console.log({
