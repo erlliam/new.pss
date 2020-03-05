@@ -12,20 +12,13 @@ function navLogic() {
     let header = document.getElementById("header");
     let main = document.getElementById("main");
 
+    header.classList.toggle("header-nav");
+    main.classList.toggle("main-nav");
+    minimize.classList.toggle("minimize-nav");
     if (visible) {
-        header.style.width = "0px";
-        header.style.padding = "0px";
-        main.style.marginLeft = "0px";
-        minimize.style.position = "fixed";
-        minimize.style.marginLeft = "30px";
         minimize.innerHTML = "Maximize";
         visible = false;
     } else {
-        header.style.width = "200px";
-        header.style.padding = "0 20px 20px 20px";
-        main.style.marginLeft = "240px";
-        minimize.style.position = "static";
-        minimize.style.marginLeft = "auto";
         minimize.innerHTML = "Minimize";
         visible = true;
     }

@@ -68,11 +68,16 @@ main {
     height: 100vh;
 }
 
-.index {
+.header-nav {
+    width: 0;
+    padding: 0;
 }
-.picture {
+.main-nav {
+    margin-left: 0;
 }
-.text {
+.minimize-nav {
+    position: fixed;
+    margin-left: 30px !important;
 }
 
 .main-div {
