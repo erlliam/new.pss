@@ -43,7 +43,7 @@ badd +154 pss/static/css/style.css
 badd +10 pss/static/js/main.js
 badd +19 colors
 badd +14 pss/templates/index/outfit.html
-badd +14 pss/templates/index/character.html
+badd +1 pss/templates/index/character.html
 badd +38 pss/daybreak_api.py
 badd +14 broken_url.txt
 badd +22 todolist.txt
@@ -67,8 +67,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 26 + 27) / 54)
-exe '2resize ' . ((&lines * 24 + 27) / 54)
+exe '1resize ' . ((&lines * 27 + 28) / 56)
+exe '2resize ' . ((&lines * 25 + 28) / 56)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -189,7 +189,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 14 - ((12 * winheight(0) + 13) / 26)
+let s:l = 14 - ((12 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -317,15 +317,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 12) / 24)
+let s:l = 1 - ((0 * winheight(0) + 12) / 25)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 1
 normal! 03|
 wincmd w
-exe '1resize ' . ((&lines * 26 + 27) / 54)
-exe '2resize ' . ((&lines * 24 + 27) / 54)
+exe '1resize ' . ((&lines * 27 + 28) / 56)
+exe '2resize ' . ((&lines * 25 + 28) / 56)
 tabnext
 edit pss/static/js/main.js
 set splitbelow splitright
@@ -456,13 +456,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 48 - ((6 * winheight(0) + 26) / 52)
+let s:l = 48 - ((6 * winheight(0) + 27) / 54)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 48
 normal! 09|
-tabnext 2
+tabnext 1
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
