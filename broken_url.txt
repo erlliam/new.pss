@@ -1,11 +1,8 @@
 http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=sua&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name
 
-
-
-/character/?character_id=[]&
+http://census.daybreakgames.com/s:supafarma/get/ps2/character/?character_id=`${}`&
 c:show=name.first,battle_rank.value,prestige_level&
-c:join=faction^inject_at:faction^show:code_tag,
-characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats,
+c:join=characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats,
 
 /item/?item_id=[]&
 c:show=name.en,image_path
@@ -18,9 +15,22 @@ c:tree=loadout_id&
 c:show=code_name&
 c:tree=loadout_id
 
-
-
-
 http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=sua
+
+{"payload": {
+            "attacker_character_id":"5428873824227609601",
+            "attacker_fire_mode_id":"664",
+            "attacker_loadout_id":"17",
+            "attacker_vehicle_id":"0",
+            "attacker_weapon_id":"432",
+            "character_id":"5428920856031044721","character_loadout_id":"6",
+            "event_name":"Death",
+            "is_headshot":"0",
+            "timestamp":"1583291265",
+            "world_id":"17",
+            "zone_id":"4"},
+            "service":"event",
+            "type":"serviceMessage"
+}
 ValueError
 ZeroDivisionError

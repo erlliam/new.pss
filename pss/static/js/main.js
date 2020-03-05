@@ -15,13 +15,14 @@ function navLogic() {
     header.classList.toggle("header-nav");
     main.classList.toggle("main-nav");
     minimize.classList.toggle("minimize-nav");
-    visible = !visible;
+    visible = !visible; // Big brain by strager
     if (visible) {
         minimize.innerHTML = "Minimize";
     } else {
         minimize.innerHTML = "Maximize";
     }
 }
+
 
 function get(url, callback) {
     let request = new XMLHttpRequest();
@@ -38,6 +39,18 @@ function get(url, callback) {
 let character = {
     exists: false
 };
+
+function populateResultsDiv() {
+    let results = document.getElementById("results");
+    let children = results.childNodes;
+
+    Object.keys(character).forEach(function(key) {
+        :
+        console.log(`Key: ${key}, Value: ${character[key]}`);
+    });
+
+    // Add information from character object to the results div
+}
 
 function initializeCharacter(name) { // we only ever initialize once... 
     let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
@@ -70,11 +83,21 @@ function initializeCharacter(name) { // we only ever initialize once...
                 }
             }
         }
+        populateResultsDiv();
     });
 }
 
-function gatherKillData() {
-    
+function gatherKillData(payload) {
+    let attacker_weapon = payload.attacker_weapon_id;
+    let attacker_loadout = payload.attacker_loadout_id;
+    let victim_loadout = payload.character_loadout_id;
+
+    let idToSearch;
+    if (payload.attacker_character_id == character.character_id) {
+        idToSearch = payload.character_id;
+    } else {
+        idToSearch = payload.attacker_character_id;
+    }
 }
 
 // GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
@@ -116,7 +139,7 @@ function startSession() {
         webSocket.onmessage = function(message) {
             message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
-                sessionDataGatherer(message.payload);
+                gatherKillData(message.payload);
             } else {
                 console.log(message);
             }
