@@ -169,3 +169,17 @@ main {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.kill,
+.death {
+    height: 65px;
+    border-radius: 33px;
+    margin-top: 10px;
+}
+
+.kill {
+    background-color: green;
+}
+.death {
+    background-color: red;
+}

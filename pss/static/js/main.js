@@ -23,30 +23,43 @@ function navLogic() {
     }
 }
 
+let apiUrl = "http://census.daybreakgames.com/s:supafarma/get/ps2/";
 
-function get(url, callback) {
+
+function getJSON(url, callback) {
+/* OLD CODE
     let request = new XMLHttpRequest();
     request.open("GET", url);
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
-            callback.apply(request);
+            callback(request);
         }
     };
     request.send();
+*/
+    let request = new Request(apiUrl + url);
+
+    fetch(request)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            callback(data); // return json, only way I know how is callback function
+        });
+
 }
 
 
-let character = {
-    exists: false
+let character = { // I reuse the data in here throughout the app so I declare it here
 };
 
 
-function initializeCharacter(name) { // we only ever initialize once... 
-    let url = `http://census.daybreakgames.com/s:supafarma/get/ps2/character/?name.first_lower=${name.toLowerCase()}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
-    get(url, function() {
-        let response = JSON.parse(this.response);
-        if (response.returned) {
-            let rawCharacter = response.character_list[0];
+function initializeCharacter(name) {
+    let url = `character/?name.first_lower=${encodeURIComponent(name.toLowerCase())}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
+    // let data = getJSON(url); is this ever possible with asynchronous programming
+    getJSON(url, function(data) { // wish I could just retrieve the json without a function here
+        if (data.returned) {
+            let rawCharacter = data.character_list[0];
             character = {
                 exists: true,
                 name: rawCharacter.name.first,
@@ -57,7 +70,7 @@ function initializeCharacter(name) { // we only ever initialize once...
                 time_played: rawCharacter.times.minutes_played,
                 level: rawCharacter.battle_rank.value,
                 prestige: rawCharacter.prestige_level,
-                "status": rawCharacter.online.online_status,
+                "status": (parseInt(rawCharacter.online.online_status) ? "Online" : "Offline"),
             };
 
             try {
@@ -81,55 +94,19 @@ function populateResultsDiv() {
     let results = document.getElementById("results");
     let children = results.children;
 
-    for (let stat in character) {
+    for (let stat in character) { // char has more keys than results has children, ineffecient?
         let child = children.namedItem(stat);
         if (child) {
-            console.log(character[stat]);
             child.innerHTML += character[stat];
         }
-    }
-    
-    // Object.keys(character).forEach(function(key) {
-    //     
-    //     console.log(`Key: ${key}, Value: ${character[key]}`);
-    // });
-
-    // Add information from character object to the results div
-}
-
-
-function gatherKillData(payload) {
-    let attacker_weapon = payload.attacker_weapon_id;
-    let attacker_loadout = payload.attacker_loadout_id;
-    let victim_loadout = payload.character_loadout_id;
-
-    let idToSearch;
-    if (payload.attacker_character_id == character.character_id) {
-        idToSearch = payload.character_id;
-    } else {
-        idToSearch = payload.attacker_character_id;
     }
 }
 
 // GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
-function sessionDataGatherer(payload) {
-    console.log(payload);
 
-    if (payload.attacker_character_id == character.character_id) { // kill
-        console.log({
-            attacker: {
-                name: character.name,
-                level: character.level,
-                kd: character.kd,
-                faction: character.faction
-            },
-            victim: {
-                name: 'find'
-            }
-        });
-    }
+function gatherKillData(payload) {
+    return
 }
-
 
 function makeKillElement(attacker, victim) {
     // ooooo
