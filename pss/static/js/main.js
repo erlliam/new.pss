@@ -23,7 +23,8 @@ function navLogic() {
     }
 }
 
-let apiUrl = "http://census.daybreakgames.com/s:supafarma/get/ps2/";
+let baseUrl = "http://census.daybreakgames.com";
+let apiUrl = baseUrl + "/s:supafarma/get/ps2/";
 
 
 function getJSON(url, callback) {
@@ -49,13 +50,26 @@ function getJSON(url, callback) {
 
 }
 
+function getImg(url, callback) {
+    let request = new Request(baseUrl + url);
+
+    fetch(request)
+        .then((response) => {
+            return response;
+        })
+        .then((data) => {
+            callback(data); // return json, only way I know how is callback function
+        });
+}
+
 
 let character = { // I reuse the data in here throughout the app so I declare it here
 };
 
 
 function initializeCharacter(name) {
-    let url = `character/?name.first_lower=${encodeURIComponent(name.toLowerCase())}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
+    name = encodeURIComponent(name.toLowerCase());
+    let url = `character/?name.first_lower=${name}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
     // let data = getJSON(url); is this ever possible with asynchronous programming
     getJSON(url, function(data) { // wish I could just retrieve the json without a function here
         if (data.returned) {
@@ -102,10 +116,55 @@ function populateResultsDiv() {
     }
 }
 
-// GET NAME, BATTLERANK, KD, FACTION, HEADSHOT, WEAPON, CLASSES
+// GET NAME, BATTLERANK, KD, HEADSHOT, WEAPON, CLASSES combined w fac
 
 function gatherKillData(payload) {
-    return
+    // first thing determine the enemy player's characterid...
+    let enemyCharacterId;
+    let enemyLoadoutId;
+    if (payload.attacker_character_id == character.character_id) {
+        enemyCharacterId = payload.character_id;
+        enemyLoadoutId = payload.character_loadout_id;
+        console.log("KILLED");
+    } else {
+        enemyCharacterId = payload.attacker_character_id;
+        enemyLoadoutId = payload.attacker_loadout_id;
+        console.log("KILLEDBY");
+    }
+    // now get the name, br, kd, faction, weapon and class...
+    // class and faction are combined!! 
+    // perhaps it's better to save all the class values instead of constantly doing a request!
+    // must lookup name,br,kd,weapon
+    // we got name, br, kd
+    let weaponId = payload.attacker_weapon_id
+    let attLoadId = payload.attacker_loadout_id;
+    let vicLoadId = payload.character_loadout_id;
+    let characterUrl = `character/?character_id=${enemyCharacterId}&c:show=character_id,name.first,battle_rank.value,prestige_level&c:join=characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats&c:tree=start:stats^field:stat_name`;
+    let weaponUrl = `item/?item_id=${payload.attacker_weapon_id}&c:show=name.en,image_path`;
+    let loadoutUrl = `loadout/?loadout_id=${attLoadId},${vicLoadId}&c:show=loadout_id,code_name&c:tree=loadout_id`; 
+
+
+    getJSON(characterUrl, function(data) {
+        if (data.returned) {
+            let rawEneCharacter = data.character_list[0];
+            console.log(rawEneCharacter);
+        }
+    });
+    getJSON(weaponUrl, function(data) {
+        if (data.returned) {
+            let rawWeapon = data.item_list[0];
+            let weaponImgUrl = rawWeapon.image_path;
+            console.log(rawWeapon.name.en);
+            getImg(weaponImgUrl, function(data) {
+                console.log(data);
+            });
+        }
+    });
+    getJSON(loadoutUrl, function(data) {
+        if (data.returned) {
+            console.log(data.loadout_list[0]);
+        }
+    });
 }
 
 function makeKillElement(attacker, victim) {
