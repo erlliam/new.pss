@@ -1,12 +1,3 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-    let minimize = document.getElementById("nav-min");
-    minimize.addEventListener("click", navLogic);
-    let sessionButton = document.getElementById("session-button");
-    // sessionButton.addEventListener("click", characterSession);
-    initializeNav();
-});
-
-// handle cookie for navbar
 let allCookies = Object.fromEntries(document.cookie.split(";").map((entry) => { // strager big brain
     let [key, value] = entry.split("=", 2);
     return [key.trim(), value.trim()];
@@ -14,60 +5,52 @@ let allCookies = Object.fromEntries(document.cookie.split(";").map((entry) => { 
 
 let visible = parseInt(allCookies.nav_state) ? true : false;
 
-function initializeNav() {
+document.addEventListener("DOMContentLoaded", () => {
+    let header = document.getElementById("header");
+    let main = document.getElementById("main");
+    let minimize = document.getElementById("nav-min");
+    let sessionButton = document.getElementById("session-button");
+
     if (!visible) {
-        let minimize = document.getElementById("nav-min"); // FOR SOME REASON IT CANTS FIND
-        // i guess we have to define it like we did in nav logic, but we don't for header and main??
-        header.classList.toggle("header-nav"); // dont even know where we declare this then...
-        main.classList.toggle("main-nav"); // 
+        header.classList.toggle("header-nav");
+        main.classList.toggle("main-nav");
         minimize.classList.toggle("minimize-nav");
         minimize.innerHTML = "Maximize";
     } 
-}
 
-function navLogic() {
-    let minimize = document.getElementById("nav-min");
-    let header = document.getElementById("header");
-    let main = document.getElementById("main");
+    minimize.addEventListener("click", () => {
+        header.classList.toggle("header-nav");
+        main.classList.toggle("main-nav");
+        minimize.classList.toggle("minimize-nav");
 
-    header.classList.toggle("header-nav");
-    main.classList.toggle("main-nav");
-    minimize.classList.toggle("minimize-nav");
+        visible = !visible; // Only works if visible is true at start
+        if (visible) {
+            minimize.innerHTML = "Minimize";
+            document.cookie = "nav_state=1";
+        } else {
+            minimize.innerHTML = "Maximize";
+            document.cookie = "nav_state=0";
+        }
+    });
 
-    visible = !visible; // Only works if visible is true at start
-    if (visible) {
-        minimize.innerHTML = "Minimize";
-        document.cookie = "nav_state=1";
-    } else {
-        minimize.innerHTML = "Maximize";
-        document.cookie = "nav_state=0";
-    }
-}
+    sessionButton.addEventListener("click", () => {
+        console.log("Hi");
+    });
+});
 
 let baseUrl = "http://census.daybreakgames.com";
 let apiUrl = baseUrl + "/s:supafarma/get/ps2/";
 
 
 function getJSON(url, callback) {
-/* OLD CODE
-    let request = new XMLHttpRequest();
-    request.open("GET", url);
-    request.onreadystatechange = function() {
-        if (request.readyState == 4 && request.status == 200) {
-            callback(request);
-        }
-    };
-    request.send();
-*/
     let request = new Request(apiUrl + url);
     fetch(request)
         .then((response) => {
             return response.json();
         })
         .then((data) => {
-            callback(data); // return json, only way I know how is callback function
+            callback(data);
         });
-
 }
 
 function getImg(url, callback) {
@@ -81,7 +64,7 @@ function getImg(url, callback) {
         });
 }
 
-let character = { // I reuse the data in here throughout the app so I declare it here
+let character = {
 };
 
 function initializeCharacter(name) {
