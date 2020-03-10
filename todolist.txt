@@ -4,7 +4,6 @@ Create layout for results
 Start working on the session part:
     Write the javascript websocket stuff
     Think of a layout and what events I plan to track
-    
 FIND A BETTER FLOW ENVIORNMENT:
     Vim auto save session on exit
         mks! s
@@ -20,3 +19,26 @@ SESSION
         Headshot
         Weapon used
         Date/time???
+
+Today:
+    Format the results
+        Default state: White color with opacity?
+        Click --> remove the "inactive layer"
+        Start adding a bunch of stuff like kills, deaths, kd, kpm
+            Store current kill amount
+            Store current death amount
+            Time elasped divided by kill amount
+
+
+
+    Handle navigation bar cookies
+
+OUTFIT::
+    Enter outfit name
+        Get list of outfit players
+        Check if they are online
+        If online add to list of players to track
+Object.fromEntries(document.cookie.split(';').map(entry => {
+    let [key, value] = entry.split('=', 2); 
+    return [key.trim(), value.trim()]; 
+}))

@@ -5,11 +5,16 @@
         <div class="search">
             <form methods="GET">
                 <label>Character Name</label>
-                <input type="text" name="name" placeholder="Name"
+                <input id="char-name" type="text" name="name" placeholder="Name"
                 value={{ request.args.get('name', '') }}>
-                <button type="submit">Search</button>
+                <button id="char-search" type="submit">Search</button>
             </form>
         </div>
+        {% if request.args.get('name') %}
+        <script>
+            initializeCharacter("{{ request.args.get('name', '') }}");
+        </script>
+        {% endif %}
         <div id="results" class="results">
                 <h2 id="name"></h2>
                 <h3 id="status">Status: </h3>
@@ -23,7 +28,7 @@
                 <h3 id="deaths">Deaths: </h3>
                 <h3 id="kd">K/D: </h3>
         </div>
-        <div class="session">
+        <div id="session" class="session">
             <button id="session-button">Start Session</button>
             <div class="session-overall">
                 <h2>Session Time: 00:00:00</h2>
