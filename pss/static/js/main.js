@@ -1,17 +1,26 @@
-let allCookies = Object.fromEntries(document.cookie.split(";").map((entry) => { // strager big brain
-    let [key, value] = entry.split("=", 2);
-    return [key.trim(), value.trim()];
-}));
-
-let visible = parseInt(allCookies.nav_state) ? true : false;
-
 document.addEventListener("DOMContentLoaded", () => {
+    let allCookies = Object.fromEntries(document.cookie.split(";").map((entry) => { // strager big brain
+        let [key, value] = entry.split("=", 2);
+        if (value === undefined) { // no cookies, value will be undefined
+                                   // cant use trim on undefined
+            value = "";
+        }
+        return [key.trim(), value.trim()];
+    }));
+    let visible;
+    if ("nav_state" in allCookies) {
+        visible = parseInt(allCookies.nav_state) ? true : false;
+    } else {
+        document.cookie = "nav_state=1";
+        visible = true;
+    }
+
     let header = document.getElementById("header");
     let main = document.getElementById("main");
     let minimize = document.getElementById("nav-min");
     let sessionButton = document.getElementById("session-button");
 
-    if (!visible) {
+    if (!visible) { // initialize navbar incase cookie says not visible 
         header.classList.toggle("header-nav");
         main.classList.toggle("main-nav");
         minimize.classList.toggle("minimize-nav");
@@ -34,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     sessionButton.addEventListener("click", () => {
-        console.log("Hi");
+        startSession();
     });
 });
 
@@ -86,6 +95,8 @@ function initializeCharacter(name) {
                 level: rawCharacter.battle_rank.value,
                 prestige: rawCharacter.prestige_level,
                 "status": (parseInt(rawCharacter.online.online_status) ? "Online" : "Offline"),
+                sess_kills: 0,
+                sess_deaths: 0
             };
 
             try {
@@ -144,57 +155,53 @@ let loadoutList = {
     "21": "VS MAX"
 }
 
-function gatherKillData(payload) {
-    // first thing determine the enemy player's characterid...
+function displayKillData(killData) {
+    console.log(`Kills: ${character.sess_kills}, Deaths:${character.sess_deaths}`);
+    console.log(killData);
+}
+
+function handleKillData(payload) {
+    let eventResult;
     let enemyCharacterId;
     let enemyLoadoutId;
+    let weaponId = payload.attacker_weapon_id
     if (payload.attacker_character_id == character.character_id) {
         enemyCharacterId = payload.character_id;
         enemyLoadoutId = payload.character_loadout_id;
-        console.log("KILLED");
+        eventResult = "kill";
+        character.sess_kills += 1;
     } else {
         enemyCharacterId = payload.attacker_character_id;
         enemyLoadoutId = payload.attacker_loadout_id;
-        console.log("KILLEDBY");
+        eventResult = "death";
+        character.sess_deaths += 1;
     }
-    // now get the name, br, kd, faction, weapon and class...
-    // class and faction are combined!! 
-    // perhaps it's better to save all the class values instead of constantly doing a request!
-    // must lookup name,br,kd,weapon
-    // we got name, br, kd
-    let weaponId = payload.attacker_weapon_id
-    let attLoadId = payload.attacker_loadout_id;
-    let vicLoadId = payload.character_loadout_id;
+
     let characterUrl = `character/?character_id=${enemyCharacterId}&c:show=character_id,name.first,battle_rank.value,prestige_level&c:join=characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats&c:tree=start:stats^field:stat_name`;
-    let weaponUrl = `item/?item_id=${payload.attacker_weapon_id}&c:show=name.en,image_path`;
+    let weapUrl = `item/?item_id=${payload.attacker_weapon_id}&c:show=name.en,image_path`;
 
-
+    let killData = {
+        eventResult: eventResult, // killed or got killedb
+        loadout: loadoutList[enemyLoadoutId]
+    };
 
     getJSON(characterUrl, function(data) {
         if (data.returned) {
-            let rawEneCharacter = data.character_list[0];
-            console.log(rawEneCharacter);
+            let rawChar = data.character_list[0];
+            killData.name = rawChar.name.first;
+            killData.br = rawChar.battle_rank.value;
+            killData.prestige = rawChar.prestige_level;
+            killData.kd = rawChar.stats.kills.all_time/rawChar.stats.deaths.all_time;
         }
+        getJSON(weapUrl, function(data) {
+            if (data.returned) {
+                let rawWeapon = data.item_list[0];
+                killData.weapName = rawWeapon.name.en;
+                killData.weapImgUrl = rawWeapon.image_path;
+                displayKillData(killData);
+            }
+        });
     });
-    getJSON(weaponUrl, function(data) {
-        if (data.returned) {
-            let rawWeapon = data.item_list[0];
-            let weaponImgUrl = rawWeapon.image_path;
-            console.log(rawWeapon.name.en);
-            getImg(weaponImgUrl, function(data) {
-                console.log(data);
-            });
-        }
-    });
-    getJSON(loadoutUrl, function(data) {
-        if (data.returned) {
-            console.log(data.loadout_list[0]);
-        }
-    });
-}
-
-function makeKillElement(killData) {
-    // ooooo
 }
 
 function startSession() {
@@ -212,13 +219,10 @@ function startSession() {
         webSocket.onmessage = function(message) {
             message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
-                let killData = gatherKillData(message.payload);
-                makeKillElement(killData);
+                handleKillData(message.payload); // um, make data appear on session div
+            } else {
+                console.log("run");
             }
         }
     }
 }
-
-
-
-
