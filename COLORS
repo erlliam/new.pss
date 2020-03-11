@@ -1,0 +1,20 @@
+header
+    main text
+
+    nav text
+search
+    placeholder text
+    color (border/text)
+results
+normal
+    Stat
+    Stat result
+    different
+    ?
+
+
+light: #3b3b3b
+normal: #262626
+darkest: #1b1b1b
+different: #144475
+

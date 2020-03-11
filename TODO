@@ -1,0 +1,28 @@
+GENERAL:
+    [_] Design the index page
+    [_] Handle
+    [_] Stop characters code from executing on /index and /outfit
+    [_] Seperate the javascript files?
+
+
+SESSION:
+    [_] Redesign the general stats that are shown
+    [_] Handle name not found
+    [_] If player offline, don't allow tracking
+        - Override?
+    [_] Make sure rawCharacter is what I think it is
+        - Sometimes some data is missing
+        - I want the missing data to be replaced
+    [_] A timer for how long the session has been going on for
+    [_] Add kills, deaths, kd, kpm to overall session
+
+
+OUTFIT:
+    [_] Search for outfit
+        [_] Search for online players
+            [_] Track online players
+                [_] Track kills
+                [_] Track deaths
+                [_] Track revives
+                [_] Track ammo
+    [_] Create a design
