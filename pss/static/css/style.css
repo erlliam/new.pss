@@ -170,14 +170,12 @@ main {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
 .kill,
 .death {
-    height: 65px;
-    border-radius: 33px;
-    margin-top: 10px;
+    padding-left: 30px;
+    border-radius: 8px;
+    margin-bottom: 2px;
 }
-
 .kill {
     background-color: green;
 }

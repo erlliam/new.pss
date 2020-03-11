@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
     let visible;
     if ("nav_state" in allCookies) {
-        visible = parseInt(allCookies.nav_state) ? true : false;
+        visible = 
+        visible = (parseInt(allCookies.nav_state)) ?
+        true :
+        false;
     } else {
         document.cookie = "nav_state=1";
         visible = true;
@@ -20,12 +23,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let minimize = document.getElementById("nav-min");
     let sessionButton = document.getElementById("session-button");
 
-    if (!visible) { // initialize navbar incase cookie says not visible 
+    if (!visible) { // initialize navbar incase cookie says not visible
         header.classList.toggle("header-nav");
         main.classList.toggle("main-nav");
         minimize.classList.toggle("minimize-nav");
-        minimize.innerHTML = "Maximize";
-    } 
+        minimize.textContent = "Maximize";
+    }
 
     minimize.addEventListener("click", () => {
         header.classList.toggle("header-nav");
@@ -34,10 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         visible = !visible; // Only works if visible is true at start
         if (visible) {
-            minimize.innerHTML = "Minimize";
+            minimize.textContent = "Minimize";
             document.cookie = "nav_state=1";
         } else {
-            minimize.innerHTML = "Maximize";
+            minimize.textContent = "Maximize";
             document.cookie = "nav_state=0";
         }
     });
@@ -59,17 +62,8 @@ function getJSON(url, callback) {
         })
         .then((data) => {
             callback(data);
-        });
-}
-
-function getImg(url, callback) {
-    let request = new Request(baseUrl + url);
-    fetch(request)
-        .then((response) => {
-            return response;
-        })
-        .then((data) => {
-            callback(data);
+        }).catch((error) => {
+            console.log(error);
         });
 }
 
@@ -78,7 +72,7 @@ let character = {
 
 function initializeCharacter(name) {
     name = encodeURIComponent(name.toLowerCase());
-    let url = `character/?name.first_lower=${name}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`
+    let url = `character/?name.first_lower=${name}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`;
     // let data = getJSON(url); is this ever possible with asynchronous programming
     getJSON(url, function(data) { // wish I could just retrieve the json without a function here
         if (data.returned) {
@@ -89,12 +83,15 @@ function initializeCharacter(name) {
                 character_id: rawCharacter.character_id,
                 faction: rawCharacter.faction.code_tag,
                 faction_id: rawCharacter.faction_id,
-                join_date: rawCharacter.times.creation_date,
-                time_played: 
+                // 2014-06-13 09:36:33.0 -> 2014-06-13
+                join_date: (rawCharacter.times.creation_date).split(" ")[0],
+                time_played:
                     (rawCharacter.times.minutes_played/60).toFixed(1) + "h",
                 level: rawCharacter.battle_rank.value,
                 prestige: rawCharacter.prestige_level,
-                "status": (parseInt(rawCharacter.online.online_status) ? "Online" : "Offline"),
+                "status": (parseInt(rawCharacter.online.online_status) ?
+                "Online" :
+                "Offline"),
                 sess_kills: 0,
                 sess_deaths: 0
             };
@@ -102,7 +99,7 @@ function initializeCharacter(name) {
             try {
                 character.kills = rawCharacter.stats.kills.all_time;
                 character.deaths = rawCharacter.stats.deaths.all_time;
-                character.kd = character.kills/character.deaths;
+                character.kd = (character.kills/character.deaths).toFixed(1);
             } catch(error) {
                 if (error instanceof TypeError) {
                     character.kills = "N/A";
@@ -110,8 +107,10 @@ function initializeCharacter(name) {
                     character.kd = "N/A";
                 }
             }
+
             populateResultsDiv();
-        } else { // not found
+        } else {
+            console.log("Not found, handle this..");
         }
     });
 
@@ -125,10 +124,11 @@ function populateResultsDiv() {
     session.style.display = "block";
     let children = results.children;
 
+
     for (let stat in character) { // char has more keys than results has children, ineffecient?
         let child = children.namedItem(stat);
         if (child) {
-            child.innerHTML += character[stat];
+            child.textContent += character[stat];
         }
     }
 }
@@ -156,6 +156,25 @@ let loadoutList = {
 }
 
 function displayKillData(killData) {
+/*
+killData = {
+    br: "44"
+    eventResult: "death"
+    kd: 0.6921100917431192
+    loadout: "VS Engineer"
+    name: "Refdanon"
+    prestige: "0"
+    weapImgUrl: "/files/ps2/images/static/89158.png"
+    weapName: "VE-LR Obelisk"
+}
+*/
+    let session = document.getElementById("session-events");
+    let div = document.createElement("div");
+    div.className = killData.eventResult
+    div.textContent = Object.values(killData).join(", ");
+
+    session.insertBefore(div, session.childNodes[0]);
+    
     console.log(`Kills: ${character.sess_kills}, Deaths:${character.sess_deaths}`);
     console.log(killData);
 }
@@ -191,13 +210,13 @@ function handleKillData(payload) {
             killData.name = rawChar.name.first;
             killData.br = rawChar.battle_rank.value;
             killData.prestige = rawChar.prestige_level;
-            killData.kd = rawChar.stats.kills.all_time/rawChar.stats.deaths.all_time;
+            killData.kd = (rawChar.stats.kills.all_time/rawChar.stats.deaths.all_time).toFixed(1);
         }
         getJSON(weapUrl, function(data) {
             if (data.returned) {
                 let rawWeapon = data.item_list[0];
                 killData.weapName = rawWeapon.name.en;
-                killData.weapImgUrl = rawWeapon.image_path;
+                killData.weapImgUrl = baseUrl+rawWeapon.image_path;
                 displayKillData(killData);
             }
         });
