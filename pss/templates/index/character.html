@@ -10,11 +10,6 @@
                 <button id="char-search" type="submit">Search</button>
             </form>
         </div>
-        {% if request.args.get('name') %}
-        <script>
-            initializeCharacter("{{ request.args.get('name', '') }}");
-        </script>
-        {% endif %}
         <div id="results" class="results">
                 <h2 id="name"></h2>
                 <h3 id="status">Status: </h3>
@@ -35,5 +30,11 @@
             <div id="session-events">
             </div>
         </div>
+        {% if request.args.get('name') %}
+            <script src="{{ url_for('static', filename='js/char.js') }}"></script>
+            <script>
+                initializeCharacter("{{ request.args.get('name', '') }}");
+            </script>
+        {% endif %}
     </div>
 {% endblock %}
