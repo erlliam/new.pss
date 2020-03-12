@@ -6,6 +6,13 @@ character/?name.first_lower=NAMELOWER
     ,characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats
     ,characters_online_status^show:online_status^inject_at:online
     &c:tree=start:stats^field:stat_name
+Show character with name. Only show stats we care about.
+Plug in the character's faction id to the faction data set and
+retrieve the string name of the faction. PERHAPS WASTE OF EFFICIENCY
+We plug character_id into characters_stat_history to get all kills/deaths.
+We plug character_id into characters_online_status to show if they are online.
+We make kills and deaths be used as the start of the data entry instead
+of it being a list.
 
 
 Enemy character kill data url:

@@ -20,18 +20,38 @@ let loadoutList = {
     "21": "VS MAX"
 };
 
+let sessionEvents = document.getElementById("session-events");
 let sessionButton = document.getElementById("session-button");
+let timeElement = document.getElementById("session-time");
+let kdElement = document.getElementById("session-kd");
+let kpmElement = document.getElementById("session-kpm");
 let session = false;
+let timeElapsed;
+let timeInterval;
+let timeContainer;
 let webSocket;
 
 sessionButton.addEventListener("click", () => {
     session = !session;
     if (session) {
-        startSession()
+        startSession();
+
+        timeElapsed = 0;
+        timeContainer = new Date(0);
+
+        timeInterval = setInterval(() => {
+            timeContainer.setTime(timeElapsed);
+            displayTime(timeContainer.toUTCString().split(" ")[4]);
+            timeElapsed += 1000;
+        }, 1000);
+
         sessionButton.textContent = "End session";
         sessionButton.classList.toggle("session-on");
     } else {
         endSession();
+
+        clearInterval(timeInterval);
+
         sessionButton.textContent = "Start session";
         sessionButton.classList.toggle("session-on");
     }
@@ -42,43 +62,35 @@ function initializeCharacter(name) {
     // let data = getJSON(url); is this ever possible
     let url = `character/?name.first_lower=${name}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`;
     // Wish I could just retrieve the json without a function here
-    getJSON(url, function(data) {
+    getJSON(url, (data) => {
         if (data.returned) {
-            let rawCharacter = data.character_list[0];
+            let rawChar = (data.character_list ?? [])[0] ?? {};
+
             character = {
                 exists: true,
-                name: rawCharacter.name.first,
-                character_id: rawCharacter.character_id,
-                faction: rawCharacter.faction.code_tag,
-                faction_id: rawCharacter.faction_id,
+                name: (rawChar.name ?? {}).first ?? "N/A",
+                character_id: rawChar.character_id ?? "N/A",
+                faction: (rawChar.faction ?? {}).code_tag ?? "N/A",
+                faction_id: rawChar.faction_id ?? "N/A",
                 // 2014-06-13 09:36:33.0 -> 2014-06-13
-                join_date: (rawCharacter.times.creation_date).split(" ")[0],
-                time_played: (rawCharacter.times.minutes_played/
-                              60).toFixed(1) + "h",
-                level: rawCharacter.battle_rank.value,
-                prestige: rawCharacter.prestige_level,
-                // I should test this code to make sure rawCharacter is accurate
+                join_date: ((rawChar.times ?? {}).creation_date ?? "").split(" ")[0],
+                // Parse string
+                time_played: (parseInt(((rawChar.times ?? {}).minutes_played ?? 0))/60)
+                             .toFixed(1) + "h",
+                level: (rawChar.battle_rank ?? {}).value ?? "N/A",
+                prestige: rawChar.prestige_level ?? "N/A",
+                // I should test this code to make sure rawChar is accurate
                 // Constantly fails cause doesnt return online properly
-                "status": parseInt(rawCharacter.online.online_status) ?
-                          "Online" :
+                "status": parseInt((rawChar.online ?? {}).online_status ?? 0)
+                          ? "Online" :
                           "Offline",
+                kills: ((rawChar.stats ?? {}).kills ?? {}).all_time ?? 0,
+                deaths: ((rawChar.stats ?? {}).deaths ?? {}).all_time ?? 0,
                 sessKills: 0,
                 sessDeaths: 0
+
             };
-
-            try {
-                character.kills = rawCharacter.stats.kills.all_time;
-                character.deaths = rawCharacter.stats.deaths.all_time;
-                character.kd = (character.kills/
-                                character.deaths).toFixed(1);
-            } catch(error) {
-                if (error instanceof TypeError) {
-                    character.kills = "N/A";
-                    character.deaths = "N/A";
-                    character.kd = "N/A";
-                }
-            }
-
+            character.kd = (character.kills/character.deaths).toFixed(1);
             populateResultsDiv();
         } else {
             console.log("Not found, handle this..");
@@ -105,7 +117,7 @@ function populateResultsDiv() {
 
 function startSession() {
     webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
-    webSocket.onopen = function() {
+    webSocket.onopen = () => {
         let deathsCommand = {
             service: "event",
             action: "subscribe",
@@ -115,15 +127,19 @@ function startSession() {
 
         webSocket.send(JSON.stringify(deathsCommand));
 
-        webSocket.onmessage = function(message) {
+        webSocket.onmessage = (message) => {
             message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
                 handleKillData(message.payload);
+
             } else {
-                console.log("run");
             }
         };
     };
+}
+
+function displayTime(sessionTime) {
+    timeElement.textContent = sessionTime;
 }
 
 function endSession() {
@@ -153,7 +169,8 @@ function handleKillData(payload) {
         loadout: loadoutList[enemyLoadoutId]
     };
 
-    getJSON(characterUrl, function(data) {
+    // TODO Convert these things to check is the object exists properly..
+    getJSON(characterUrl, (data) => {
         if (data.returned) {
             let rawChar = data.character_list[0];
             killData.name = rawChar.name.first;
@@ -162,7 +179,7 @@ function handleKillData(payload) {
             killData.kd = (rawChar.stats.kills.all_time/
                            rawChar.stats.deaths.all_time).toFixed(1);
         }
-        getJSON(weapUrl, function(data) {
+        getJSON(weapUrl, (data) => {
             if (data.returned) {
                 let rawWeapon = data.item_list[0];
                 killData.weapName = rawWeapon.name.en;
@@ -174,13 +191,15 @@ function handleKillData(payload) {
 }
 
 function displayKillData(killData) {
-    let session = document.getElementById("session-events");
     let div = document.createElement("div");
     div.className = killData.eventResult;
     div.textContent = Object.values(killData).join(", ");
 
-    session.insertBefore(div, session.childNodes[0]);
+    sessionEvents.insertBefore(div, sessionEvents.childNodes[0]);
 
-    console.log(`Kills: ${character.sessKills}, Deaths:${character.sessDeaths}`);
+    kdElement.textContent = `Kills: ${character.sessKills},
+                             Deaths:${character.sessDeaths}, KD: ${character.sessKills/character.sessDeaths}`
+    let minutesElapsed = timeContainer.getTime()/1000/60;
+    kpmElement.textContent = `KPM: ${character.sessKills/minutesElapsed}`
     console.log(killData);
 }

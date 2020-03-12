@@ -6,14 +6,19 @@ function initializeOutfit(name) {
 
     getJSON(url, (data) => {
         if (data.returned) {
-            let rawOutfit = data.outfit_list[0];
+            let rawOutfit = (data.outfit_list ?? [])[0]
             let onlineMembers = {};
+            let members = rawOutfit.members ?? {};
             
-            Object.keys(rawOutfit.members).forEach((world) => {
+            // Nice coalescing operator, no more unexpected stuffs
+            // Now we can trust the data.
+            Object.keys(members).forEach((world) => {
                 if (world != 0) {
-                    let onlineMembersRaw = rawOutfit.members[world];
+                    let onlineMembersRaw = members[world] ?? {};
                     onlineMembersRaw.forEach((member) => {
-                        onlineMembers[member.character_id] = member.name.name.first;
+                        let memberId = member.character_id ?? "N/A";
+                        let memberName = ((member.name ?? {}).name ?? {}).first ?? "N/A";
+                        onlineMembers[memberId] = memberName;
                     });
                 }
             });
@@ -23,7 +28,8 @@ function initializeOutfit(name) {
 }
 
 function trackAllPlayers(onlineMembers) {
-    startSession(onlineMembers);
+    console.log(onlineMembers);
+
 }
 
 function startSession(onlineMembers) {

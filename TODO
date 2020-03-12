@@ -2,8 +2,9 @@ GENERAL:
     [_] Design the index page
     [x] Stop characters code from executing on /index and /outfit
     [x] Seperate the javascript files?
-    [_] Create a helper function to validate the JSON I am accessing is what
+    [x] Create a helper function to validate the JSON I am accessing is what
         I expect it to be.
+        - Learned about coalescing operator
 
 
 SESSION:
@@ -12,11 +13,13 @@ SESSION:
     [_] Handle name not found
     [_] If player offline, don't allow tracking
         - Override?
-    [_] Make sure rawCharacter is what I think it is
+    [x] Make sure rawCharacter is what I think it is
         - Sometimes some data is missing
         - I want the missing data to be replaced
-    [_] A timer for how long the session has been going on for
-    [_] Add kills, deaths, kd, kpm to overall session
+    [x] A timer for how long the session has been going on for
+    [x] Add kills, deaths, kd, kpm to overall session
+    [_] Decide when to update kpm...
+    [_] Validate the enemy character and weapon stuff
 
 
 OUTFIT:
@@ -29,3 +32,15 @@ OUTFIT:
                 [_] Track revives
                 [_] Track ammo
     [_] Create a design
+
+LEARN:
+    [_] Find out how to use c:tree on a c:tree'd field...
+        How to select something that is a array number???
+        Tree works:
+
+
+
+start:name
+name is selected. If name has array elements then you can select a property
+of the array and that array element becomes an object with the name of the property.
+if that property has a list, you can repeat the process.
