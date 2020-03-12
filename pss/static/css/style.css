@@ -183,3 +183,9 @@ main {
 .death {
     background-color: red;
 }
+.session-on {
+    display: block;
+    margin: 5px auto;
+    position: static !important;
+    transform: none !important;
+}

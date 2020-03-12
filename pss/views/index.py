@@ -9,15 +9,6 @@ def index():
 
 @bp.route('/character')
 def character():
-    search = request.args.get('name')
-    if search:
-        # char = daybreak_api.get_character(search.lower())
-        char = 2
-        if char:
-            return render_template('index/character.html', char=char)
-        else:
-            print('Not found!')
-
     return render_template('index/character.html')
 
 @bp.route('/outfit')

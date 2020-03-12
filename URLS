@@ -1,6 +1,6 @@
 Initialize character url:
 
-character/?name.first_lower=supafarma
+character/?name.first_lower=NAMELOWER
     &c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level
     &c:join=faction^inject_at:faction^show:code_tag
     ,characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats
@@ -20,6 +20,28 @@ Weapon url:
 
 item/?item_id=WEAPON_ID
     &c:show=name.en,image_path
+
+Search outfit, get all members, get name and online status:
+
+outfit/?alias_lower=LOWERALIAS
+    &c:show=outfit_id,name,alias,member_count
+    &c:join=outfit_member^list:1^inject_at:members^show:character_id
+    (characters_online_status^on:character_id^inject_at:online^show:online_status,
+    character^on:character_id^inject_at:name^show:name.first)
+    &c:tree=start:members^list:1^field:online.online_status
+
+
+TEST:
+item/?item_id=26003
+    &c:show=item_id,name.en
+    &c:join=item_attachment^list:0^hide:item_id
+    (item^on:attachment_item_id^to:item_id)
+
+It gets item with ID 26003. From there it passes item_id to item_attachment and does a normal join.
+From there you do a nested join. You take attachment_item_id and pass it into item.
+You must specify what field attachment_item_id will take on. This field is item_id.
+This is because attachment_item_id has a different name then item_id.
+To defaults to the value of ^on if provided.
 
 
 Payload example:

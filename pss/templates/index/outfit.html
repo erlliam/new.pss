@@ -5,7 +5,8 @@
         <div class="search">
             <form methods="GET">
                 <label>Outfit Name</label>
-                <input type="text" name="name" placeholder="Name">
+                <input id="char-name" type="text" name="name" placeholder="Name"
+                value={{ request.args.get('name', '') }}>
                 <button type="submit">Search</button>
             </form>
         </div>
@@ -13,5 +14,11 @@
         </div>
         <div class="session">
         </div>
+        {% if request.args.get('name') %}
+            <script src="{{ url_for('static', filename='js/outfit.js') }}"></script>
+            <script>
+                initializeOutfit("{{ request.args.get('name', '') }}");
+            </script>
+        {% endif %}
     </div>
 {% endblock %}

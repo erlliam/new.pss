@@ -21,9 +21,20 @@ let loadoutList = {
 };
 
 let sessionButton = document.getElementById("session-button");
+let session = false;
+let webSocket;
 
 sessionButton.addEventListener("click", () => {
-    startSession();
+    session = !session;
+    if (session) {
+        startSession()
+        sessionButton.textContent = "End session";
+        sessionButton.classList.toggle("session-on");
+    } else {
+        endSession();
+        sessionButton.textContent = "Start session";
+        sessionButton.classList.toggle("session-on");
+    }
 });
 
 function initializeCharacter(name) {
@@ -93,7 +104,7 @@ function populateResultsDiv() {
 }
 
 function startSession() {
-    let webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
+    webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
     webSocket.onopen = function() {
         let deathsCommand = {
             service: "event",
@@ -113,6 +124,10 @@ function startSession() {
             }
         };
     };
+}
+
+function endSession() {
+    webSocket.close();
 }
 
 function handleKillData(payload) {

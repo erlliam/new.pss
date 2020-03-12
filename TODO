@@ -1,12 +1,14 @@
 GENERAL:
     [_] Design the index page
-    [_] Handle
-    [_] Stop characters code from executing on /index and /outfit
-    [_] Seperate the javascript files?
+    [x] Stop characters code from executing on /index and /outfit
+    [x] Seperate the javascript files?
+    [_] Create a helper function to validate the JSON I am accessing is what
+        I expect it to be.
 
 
 SESSION:
     [_] Redesign the general stats that are shown
+    [x] Start session becomes stop session
     [_] Handle name not found
     [_] If player offline, don't allow tracking
         - Override?
@@ -18,11 +20,12 @@ SESSION:
 
 
 OUTFIT:
-    [_] Search for outfit
-        [_] Search for online players
-            [_] Track online players
-                [_] Track kills
-                [_] Track deaths
+    [x] Search for outfit
+        [x] Search for online players
+            [x] Track online players
+                [_] DO STUFF WITH DATA
+                [x] Track kills
+                [x] Track deaths
                 [_] Track revives
                 [_] Track ammo
     [_] Create a design
