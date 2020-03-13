@@ -59,13 +59,10 @@ sessionButton.addEventListener("click", () => {
 
 function initializeCharacter(name) {
     name = encodeURIComponent(name.toLowerCase());
-    // let data = getJSON(url); is this ever possible
     let url = `character/?name.first_lower=${name}&c:show=character_id,name.first,faction_id,times.creation_date,times.minutes_played,battle_rank.value,prestige_level&c:join=faction^inject_at:faction^show:code_tag,characters_stat_history^list:1^terms:stat_name=kills%27stat_name=deaths^show:stat_name%27all_time^inject_at:stats,characters_online_status^show:online_status^inject_at:online&c:tree=start:stats^field:stat_name`;
-    // Wish I could just retrieve the json without a function here
     getJSON(url, (data) => {
         if (data.returned) {
             let rawChar = (data.character_list ?? [])[0] ?? {};
-
             character = {
                 exists: true,
                 name: (rawChar.name ?? {}).first ?? "N/A",
@@ -79,8 +76,6 @@ function initializeCharacter(name) {
                              .toFixed(1) + "h",
                 level: (rawChar.battle_rank ?? {}).value ?? "N/A",
                 prestige: rawChar.prestige_level ?? "N/A",
-                // I should test this code to make sure rawChar is accurate
-                // Constantly fails cause doesnt return online properly
                 "status": parseInt((rawChar.online ?? {}).online_status ?? 0)
                           ? "Online" :
                           "Offline",
@@ -93,7 +88,19 @@ function initializeCharacter(name) {
             character.kd = (character.kills/character.deaths).toFixed(1);
             populateResultsDiv();
         } else {
-            console.log("Not found, handle this..");
+            let request = new Request("/flash");
+            let body = {
+                message: "User was not found. Check the name."
+            };
+
+            fetch(request, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            // .then() Handle error??
         }
     });
 
@@ -131,7 +138,6 @@ function startSession() {
             message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
                 handleKillData(message.payload);
-
             } else {
             }
         };
@@ -140,6 +146,8 @@ function startSession() {
 
 function displayTime(sessionTime) {
     timeElement.textContent = sessionTime;
+    let minutesElapsed = timeContainer.getTime()/1000/60;
+    kpmElement.textContent = `KPM: ${character.sessKills/minutesElapsed}`
 }
 
 function endSession() {
@@ -172,18 +180,26 @@ function handleKillData(payload) {
     // TODO Convert these things to check is the object exists properly..
     getJSON(characterUrl, (data) => {
         if (data.returned) {
-            let rawChar = data.character_list[0];
-            killData.name = rawChar.name.first;
-            killData.br = rawChar.battle_rank.value;
-            killData.prestige = rawChar.prestige_level;
-            killData.kd = (rawChar.stats.kills.all_time/
-                           rawChar.stats.deaths.all_time).toFixed(1);
+            let rawChar = (data.character_list ?? [])[0] ?? {};
+            killData.name = (rawChar.name ?? {}).first ?? "N/A";
+            killData.level = (rawChar.battle_rank ?? {}).value ?? "N/A";
+            killData.prestige = rawChar.prestige_level ?? "N/A";
+            let kills = ((rawChar.stats ?? {}).kills ?? {}).all_time ?? 0;
+            let deaths = ((rawChar.stats ?? {}).deaths ?? {}).all_time ?? 0;
+            killData.kd = (kills/deaths).toFixed(1);
         }
         getJSON(weapUrl, (data) => {
             if (data.returned) {
-                let rawWeapon = data.item_list[0];
-                killData.weapName = rawWeapon.name.en;
-                killData.weapImgUrl = baseUrl+rawWeapon.image_path;
+                let rawWeapon = (data.item_list ?? [])[0] ?? {};
+                killData.weapName = (rawWeapon.name ?? {}).en ?? "N/A";
+                // A default url when name isn't found. N/A is bad.
+                let image_path = rawWeapon.image_path ?? "N/A";
+                killData.weapImgUrl = baseUrl+image_path;
+                displayKillData(killData);
+            } else { 
+            // In the case the api's item fetching isn't returning data properly...
+                killData.weapName = "N/A";
+                killData.image_path = "N/A";
                 displayKillData(killData);
             }
         });
@@ -199,7 +215,4 @@ function displayKillData(killData) {
 
     kdElement.textContent = `Kills: ${character.sessKills},
                              Deaths:${character.sessDeaths}, KD: ${character.sessKills/character.sessDeaths}`
-    let minutesElapsed = timeContainer.getTime()/1000/60;
-    kpmElement.textContent = `KPM: ${character.sessKills/minutesElapsed}`
-    console.log(killData);
 }

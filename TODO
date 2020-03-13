@@ -10,7 +10,9 @@ GENERAL:
 SESSION:
     [_] Redesign the general stats that are shown
     [x] Start session becomes stop session
-    [_] Handle name not found
+    [x] Handle name not found
+        [_] Message flashing only shows up after refreshing. We want it
+        to show up instantly. Perhaps we don't use back end flashing??
     [_] If player offline, don't allow tracking
         - Override?
     [x] Make sure rawCharacter is what I think it is
@@ -18,8 +20,8 @@ SESSION:
         - I want the missing data to be replaced
     [x] A timer for how long the session has been going on for
     [x] Add kills, deaths, kd, kpm to overall session
-    [_] Decide when to update kpm...
-    [_] Validate the enemy character and weapon stuff
+    [x] Decide when to update kpm...
+    [x] Validate the enemy character and weapon stuff
 
 
 OUTFIT:
