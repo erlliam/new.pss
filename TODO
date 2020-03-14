@@ -1,5 +1,6 @@
 GENERAL:
-    [_] Design the index page
+    [x] Design the index page
+        [_] Make the index page look nicer.
     [x] Stop characters code from executing on /index and /outfit
     [x] Seperate the javascript files?
     [x] Create a helper function to validate the JSON I am accessing is what
@@ -33,6 +34,15 @@ OUTFIT:
                 [x] Track deaths
                 [_] Track revives
                 [_] Track ammo
+    [_] Display the members that are online
+    [_] Display general stats
+        [_] time elapsed
+    [_] Display the outfits overall stats
+        [_] Kills
+        [_] Deaths
+        [_] Outfit revives
+    [_] Show the kills, deaths, revives, etc that happen.
+    [_] Find a way to find the exp id for revives
     [_] Create a design
 
 LEARN:

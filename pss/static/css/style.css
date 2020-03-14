@@ -7,6 +7,7 @@
     --no-co: #363636;
     --li-co: #222222;
     --da-co: #0D0D0D;
+    --te-pr: #B3B3B3;
     --te-se: #F0F0F0;
 }
 
@@ -66,6 +67,24 @@ header * {
 main {
     margin-left: 240px;
     height: 100vh;
+}
+
+.text {
+    padding: 100px;
+    margin: auto;
+    width: 50%;
+    color: var(--te-pr);
+}
+
+.text > h1 {
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+
+.text > p {
+    margin-bottom: 30px;
+    font-size: 1.4em;
 }
 
 .header-nav {
@@ -160,6 +179,10 @@ main {
     position: relative;
     overflow: auto;
 }
+
+.visible {
+    display: block;
+}
 #session-button {
     box-sizing: border-box;
     width: 150px;
@@ -171,18 +194,29 @@ main {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.kill,
-.death {
+
+.event {
     padding-left: 30px;
     border-radius: 8px;
     margin-bottom: 2px;
 }
+
 .kill {
     background-color: green;
 }
+
 .death {
     background-color: red;
 }
+
+.revive {
+    background-color: blue;
+}
+
+.ammo {
+    background-color: gray;
+}
+
 .session-on {
     display: block;
     margin: 5px auto;

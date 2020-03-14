@@ -108,9 +108,9 @@ function initializeCharacter(name) {
 
 function populateResultsDiv() {
     let results = document.getElementById("results");
-    results.style.display = "block";
     let session = document.getElementById("session");
-    session.style.display = "block";
+    results.classList.add("visible");
+    session.classList.add("visible");
     let children = results.children;
 
     // character has more keys than results has children, is this ineffecient?
