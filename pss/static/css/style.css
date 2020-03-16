@@ -1,14 +1,12 @@
 :root {
-    --no-co: #363636;
-    --li-co: #222222;
-    --te-pr: #B3B3B3;
-    --te-se: #F0F0F0;
+    --nav-width: 240px;
     --c-header: #0D0D0D;
     --c-main: #222222;
     --c-child: #363636;
     --c-button: #977E08;
     --c-text-light: #F0F0F0;
     --c-text-dark: ;
+    --c-button: #EBC302;
 }
 
 * {
@@ -24,8 +22,9 @@ header {
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 200px;
+    box-sizing: border-box;
+    height: 100vh;
+    width: var(--nav-width);
     padding: 0 20px 20px 20px;
     background-color: var(--c-header);
 }
@@ -35,6 +34,8 @@ header * {
 }
 
 header > button {
+    background-color: var(--c-button);
+    border: 0;
     font-weight: 900;
     top: 0;
     display: block;
@@ -45,7 +46,7 @@ header > button {
     overflow: hidden;
 }
 
-#header-logo {
+.header-logo {
     font-size: 1.7em;
     font-weight: 100;
     letter-spacing: -0.15em;
@@ -58,11 +59,11 @@ header > button {
     margin-bottom: 20px;
 }
 
-#header-nav {
+.header-nav {
     text-align: center;
 }
 
-#header-nav > a {
+.header-nav > a {
     display: block;
     font-size: 1.2em;
     text-decoration: none;
@@ -83,7 +84,7 @@ header > button {
 }
 
 main {
-    margin-left: 240px;
+    margin-left: var(--nav-width);
     height: 100vh;
 }
 
@@ -91,7 +92,7 @@ main {
     padding: 100px;
     margin: auto;
     width: 50%;
-    color: var(--te-pr);
+    color: var(--c-text-light);
 }
 
 .text > h1 {
@@ -138,7 +139,7 @@ main {
     grid-area: label;
     margin-bottom: 10px;
     justify-self: center;
-    color: var(--te-se);
+    color: var(--c-text-light);
     font-size: 1.2em;
 }
 
@@ -146,8 +147,8 @@ main {
 #char-search {
     border: 1px solid;
     padding: 10px 8px;
-    background-color: var(--no-co);
-    color: var(--te-se);
+    background-color: var(--c-child);
+    color: var(--c-text-light);
     font-size: 1.1em;
 }
 
@@ -166,7 +167,7 @@ main {
 
 #results,
 #session {
-    background-color: var(--no-co);
+    background-color: var(--c-child);
     border-radius: 10px;
     padding: 30px;
     display: none;

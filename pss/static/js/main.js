@@ -7,7 +7,10 @@ let headerButton;
 let main;
 // stuff
 let cookies = {};
-let navbarVisible;
+let headerButtonText = {
+    0: "Maximize",
+    1: "Minimize"
+};
 
 document.addEventListener("DOMContentLoaded", () => {
     header = document.getElementById("header");
@@ -33,19 +36,14 @@ function initializeCookies() {
             return [key.trim(), value.trim()];
         })
     );
-    if ("navState" in cookies) {
-        navbarVisible = parseInt(cookies.nav_state) ?
-                  true :
-                  false;
-    } else {
-        // cookie doesn't exist.
+
+    if (!cookies.hasOwnProperty("navState")) {
         document.cookie = "navState=1";
-        navbarVisible = true;
     }
 }
 
 function initializeNavbar() {
-    if (!navbarVisible) {
+    if (!Number(cookies.navState)) {
         header.classList.toggle("header-closed");
         main.classList.toggle("main-closed");
         headerButton.classList.toggle("header-button-closed");
@@ -54,20 +52,14 @@ function initializeNavbar() {
 }
 
 function navbarLogic() {
-    navbarVisible = !navbarVisible;
-    document.cookie = `navState=${Number(navbarVisible)}`
+    cookies.navState = Number(!cookies.navState);
+    document.cookie = `navState=${Number(cookies.navState)}`
 
     header.classList.toggle("header-closed");
     main.classList.toggle("main-closed");
     headerButton.classList.toggle("header-button-closed");
 
-    // array with navbar state text? no more if statement
-    // just use navbarvisible as a number..
-    if (navbarVisible) {
-        headerButton.textContent = "Minimize";
-    } else {
-        headerButton.textContent = "Maximize";
-    }
+    headerButton.textContent = headerButtonText[cookies.navState];
 }
 
 
