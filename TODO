@@ -6,6 +6,8 @@ GENERAL:
     [x] Create a helper function to validate the JSON I am accessing is what
         I expect it to be.
         - Learned about coalescing operator
+    [_] Clean up everything. There are many inconsistent things
+        [_] make better use of the id and class names
 
 
 SESSION:
@@ -34,7 +36,7 @@ OUTFIT:
                 [x] Track deaths
                 [_] Track revives
                 [_] Track ammo
-    [_] Display the members that are online
+    [x] Display the members that are online
     [_] Display general stats
         [_] time elapsed
     [_] Display the outfits overall stats
@@ -49,7 +51,6 @@ LEARN:
     [_] Find out how to use c:tree on a c:tree'd field...
         How to select something that is a array number???
         Tree works:
-
 
 
 start:name

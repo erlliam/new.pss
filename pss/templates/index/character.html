@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% block title %}Index{% endblock %}
 {% block main %}
-    <div class="main-div">
-        <div class="search">
+    <div id="main-div">
+        <div id="search">
             <form methods="GET">
                 <label>Character Name</label>
                 <input id="char-name" type="text" name="name" placeholder="Name"
@@ -10,7 +10,7 @@
                 <button id="char-search" type="submit">Search</button>
             </form>
         </div>
-        <div id="results" class="results">
+        <div id="results">
                 <h2 id="name"></h2>
                 <h3 id="status">Status: </h3>
                 <h3 id="faction">Faction: </h3>
@@ -23,9 +23,9 @@
                 <h3 id="deaths">Deaths: </h3>
                 <h3 id="kd">K/D: </h3>
         </div>
-        <div id="session" class="session">
+        <div id="session">
             <button id="session-button">Start Session</button>
-            <div class="session-overall">
+            <div id="session-overall">
                 <div id="session-time"></div>
                 <div id="session-kd"></div>
                 <div id="session-kpm"></div>

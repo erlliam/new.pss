@@ -1,18 +1,23 @@
+:root {
+    --no-co: #363636;
+    --li-co: #222222;
+    --te-pr: #B3B3B3;
+    --te-se: #F0F0F0;
+    --c-header: #0D0D0D;
+    --c-main: #222222;
+    --c-child: #363636;
+    --c-button: #977E08;
+    --c-text-light: #F0F0F0;
+    --c-text-dark: ;
+}
+
 * {
     margin: 0;
     font-family: sans-serif;
 }
 
-:root {
-    --no-co: #363636;
-    --li-co: #222222;
-    --da-co: #0D0D0D;
-    --te-pr: #B3B3B3;
-    --te-se: #F0F0F0;
-}
-
 body {
-    background-color: var(--li-co);
+    background-color: var(--c-main);
 }
 
 header {
@@ -22,46 +27,59 @@ header {
     height: 100%;
     width: 200px;
     padding: 0 20px 20px 20px;
-    background-color: var(--da-co);
+    background-color: var(--c-header);
 }
 
 header * {
     outline-offset: -1px;
 }
 
-#he-di {
+header > button {
+    font-weight: 900;
+    top: 0;
+    display: block;
+    margin: 30px auto 10px auto;
+}
+
+.overflow {
     overflow: hidden;
 }
 
-.he-lo {
+#header-logo {
     font-size: 1.7em;
     font-weight: 100;
     letter-spacing: -0.15em;
     text-decoration: none;
     text-align: center;
     white-space: nowrap;
-    color: var(--te-se);
+    color: var(--c-text-light);
     display: block;
+    margin: 20px 0;
     margin-bottom: 20px;
 }
 
-.he-na{
+#header-nav {
     text-align: center;
 }
 
-.he-na > a {
+#header-nav > a {
     display: block;
     font-size: 1.2em;
     text-decoration: none;
-    color: var(--te-se);;
+    color: var(--c-text-light);;
     padding: 5px 0;
 }
 
-#nav-min {
-    font-weight: 900;
-    top: 0;
-    display: block;
-    margin: 30px auto 10px auto;
+.header-closed {
+    width: 0;
+    padding: 0;
+}
+.main-closed {
+    margin-left: 0;
+}
+.header-button-closed {
+    position: fixed;
+    margin: 30px;
 }
 
 main {
@@ -84,22 +102,11 @@ main {
 
 .text > p {
     margin-bottom: 30px;
-    font-size: 1.4em;
+    font-size: 1.4em
 }
 
-.header-nav {
-    width: 0;
-    padding: 0;
-}
-.main-nav {
-    margin-left: 0;
-}
-.minimize-nav {
-    position: fixed;
-    margin: 30px !important;
-}
 
-.main-div {
+#main-div {
     height: 100%;
     display: grid;
     grid-template-areas:
@@ -114,20 +121,20 @@ main {
     box-sizing: border-box;
 }
 
-.search {
+#search {
     grid-area: search;
     align-self: center;
     justify-self: center;
 }
 
-.search > form {
+#search > form {
     margin-left: 30px;
     display: grid;
     grid-template-areas:
         "label label label"
         "input input button";
 }
-.search > form > label {
+#search > form > label {
     grid-area: label;
     margin-bottom: 10px;
     justify-self: center;
@@ -135,8 +142,8 @@ main {
     font-size: 1.2em;
 }
 
-.search > form > input,
-.search > form > button {
+#char-name,
+#char-search {
     border: 1px solid;
     padding: 10px 8px;
     background-color: var(--no-co);
@@ -144,29 +151,31 @@ main {
     font-size: 1.1em;
 }
 
-.search > form > input {
+#char-name {
     grid-area: input;
     border-right-width: 0;
     border-radius: 5px 0 0 5px;
 }
-.search > form > button{
+#char-search {
     grid-area: button;
     border-radius: 0 5px 5px 0;
 }
-.search > button:hover {
+#char-search:hover {
     background-color: #1C0E10;
 }
 
-.results,
-.session {
+#results,
+#session {
     background-color: var(--no-co);
     border-radius: 10px;
     padding: 30px;
     display: none;
 }
 
-.results {
+#results {
     grid-area: result;
+    overflow: auto;
+
 }
 
 .name {
@@ -174,15 +183,16 @@ main {
     justify-self: center;
 }
 
-.session {
+.visible {
+    display: block !important;
+}
+
+#session {
     grid-area: session;
     position: relative;
     overflow: auto;
 }
 
-.visible {
-    display: block;
-}
 #session-button {
     box-sizing: border-box;
     width: 150px;
@@ -195,6 +205,13 @@ main {
     transform: translate(-50%, -50%);
 }
 
+.session-on {
+    display: block;
+    margin: 5px auto;
+    position: static !important;
+    transform: none !important;
+}
+
 .event {
     padding-left: 30px;
     border-radius: 8px;
@@ -202,24 +219,17 @@ main {
 }
 
 .kill {
-    background-color: green;
+    background-color: #067806;
 }
 
 .death {
-    background-color: red;
+    background-color: #970808;
 }
 
 .revive {
-    background-color: blue;
+    background-color: #0B3C61;
 }
 
 .ammo {
-    background-color: gray;
-}
-
-.session-on {
-    display: block;
-    margin: 5px auto;
-    position: static !important;
-    transform: none !important;
+    background-color: #383629;
 }

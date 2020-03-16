@@ -1,10 +1,28 @@
+// urls 
 const baseUrl = "http://census.daybreakgames.com";
 const apiUrl = baseUrl + "/s:supafarma/get/ps2/";
-let visible;
+// html tags/nodes
+let header;
+let headerButton;
+let main;
+// stuff
+let cookies = {};
+let navbarVisible;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Strager big brain
-    let allCookies = Object.fromEntries(
+    header = document.getElementById("header");
+    headerButton = document.getElementById("header-button");
+    main = document.getElementById("main");
+
+    initializeCookies();
+    initializeNavbar();
+
+    headerButton.addEventListener("click", navbarLogic);
+
+});
+
+function initializeCookies() {
+    cookies = Object.fromEntries(
         document.cookie.split(";").map((entry) => {
             let [key, value] = entry.split("=", 2);
             // No cookies means value will be undefined
@@ -15,41 +33,43 @@ document.addEventListener("DOMContentLoaded", () => {
             return [key.trim(), value.trim()];
         })
     );
-    if ("nav_state" in allCookies) {
-        visible = parseInt(allCookies.nav_state) ?
+    if ("navState" in cookies) {
+        navbarVisible = parseInt(cookies.nav_state) ?
                   true :
                   false;
     } else {
-        document.cookie = "nav_state=1";
-        visible = true;
+        // cookie doesn't exist.
+        document.cookie = "navState=1";
+        navbarVisible = true;
     }
+}
 
-    let header = document.getElementById("header");
-    let main = document.getElementById("main");
-    let minimize = document.getElementById("nav-min");
-    // Handle nav_state=0 cookie, navbar is hidden
-    if (!visible) {
-        header.classList.toggle("header-nav");
-        main.classList.toggle("main-nav");
-        minimize.classList.toggle("minimize-nav");
-        minimize.textContent = "Maximize";
+function initializeNavbar() {
+    if (!navbarVisible) {
+        header.classList.toggle("header-closed");
+        main.classList.toggle("main-closed");
+        headerButton.classList.toggle("header-button-closed");
+        headerButton.textContent = "Maximize";
     }
+}
 
-    minimize.addEventListener("click", () => {
-        header.classList.toggle("header-nav");
-        main.classList.toggle("main-nav");
-        minimize.classList.toggle("minimize-nav");
+function navbarLogic() {
+    navbarVisible = !navbarVisible;
+    document.cookie = `navState=${Number(navbarVisible)}`
 
-        visible = !visible;
-        if (visible) {
-            minimize.textContent = "Minimize";
-            document.cookie = "nav_state=1";
-        } else {
-            minimize.textContent = "Maximize";
-            document.cookie = "nav_state=0";
-        }
-    });
-});
+    header.classList.toggle("header-closed");
+    main.classList.toggle("main-closed");
+    headerButton.classList.toggle("header-button-closed");
+
+    // array with navbar state text? no more if statement
+    // just use navbarvisible as a number..
+    if (navbarVisible) {
+        headerButton.textContent = "Minimize";
+    } else {
+        headerButton.textContent = "Maximize";
+    }
+}
+
 
 function getJSON(url, callback) {
     let request = new Request(apiUrl + url);

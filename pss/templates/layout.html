@@ -13,16 +13,17 @@
 </head>
 <body>
     <header id="header">
-        <button id="nav-min">Minimize</button>
-        <div id="he-di">
-            <a class="he-lo" href="/">Planetside Search</a>
-            <nav class="he-na">
+        <button id="header-button">Minimize</button>
+        <div class="overflow">
+            <a id="header-logo" href="/">Planet Sessions</a>
+            <nav id="header-nav">
                 <a href="/">Home</a>
                 <a href="/character">Characters</a>
                 <a href="/outfit">Outfits</a>
             </nav>
         </div>
     </header>
+
     <main id="main">
         {% with messages = get_flashed_messages() %}
             {% if messages %}

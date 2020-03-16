@@ -147,7 +147,8 @@ function startSession() {
 function displayTime(sessionTime) {
     timeElement.textContent = sessionTime;
     let minutesElapsed = timeContainer.getTime()/1000/60;
-    kpmElement.textContent = `KPM: ${character.sessKills/minutesElapsed}`
+    let kpm = (character.sessKills/minutesElapsed).toFixed(1);
+    kpmElement.textContent = `KPM: ${kpm}`;
 }
 
 function endSession() {
@@ -179,6 +180,7 @@ function handleKillData(payload) {
 
     // TODO Convert these things to check is the object exists properly..
     getJSON(characterUrl, (data) => {
+
         if (data.returned) {
             let rawChar = (data.character_list ?? [])[0] ?? {};
             killData.name = (rawChar.name ?? {}).first ?? "N/A";
@@ -208,11 +210,12 @@ function handleKillData(payload) {
 
 function displayKillData(killData) {
     let div = document.createElement("div");
-    div.className = killData.eventResult;
+    div.className = killData.eventResult + " event";
     div.textContent = Object.values(killData).join(", ");
 
     sessionEvents.insertBefore(div, sessionEvents.childNodes[0]);
+    let kd = (character.sessKills/character.sessDeaths).toFixed(1);
 
     kdElement.textContent = `Kills: ${character.sessKills},
-                             Deaths:${character.sessDeaths}, KD: ${character.sessKills/character.sessDeaths}`
+                             Deaths:${character.sessDeaths}, KD: ${kd}`;
 }

@@ -1,20 +1,29 @@
-header
-    main text
+Header: #0D0D0D
+    Logo Text: #F0F0F0
+    Text: #F0F0F0
+    Button: Determine
+        Text: Determine
 
-    nav text
-search
-    placeholder text
-    color (border/text)
-results
-normal
-    Stat
-    Stat result
-    different
-    ?
+Main: #222222
+    Section: #363636
+        Text: #F0F0F0
+
+Events:
+    Kill: #067806
+    Death: #970808
+    Revive: #0B3C61
+    Ammo: #383629
+
+Button #977E08
+
+Buttons should be a different color...
+Perhaps my logo text should bea differnet color.
+Nav color and then logo color
+
+I like the header color. I perhaps want to go ahead and do a material design for
+the buttons.
+
+Redesign the minimize button for sure.
 
 
-light: #3b3b3b
-normal: #262626
-darkest: #1b1b1b
-different: #144475
 
