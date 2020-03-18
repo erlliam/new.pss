@@ -6,6 +6,9 @@ let header;
 let headerButton;
 let main;
 // stuff
+=======
+let localStorage = window.localStorage;
+>>>>>>> dev
 let navVisible;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,7 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHeaderUI();
 
     headerButton.addEventListener("click", onHeaderButtonClick);
+=======
+    initializeLocalStorage()
+    updateHeaderUI();
+>>>>>>> dev
 
+    headerButton.addEventListener("click", onHeaderButtonClick);
 });
 
 function initializeCookies() {
@@ -47,6 +55,20 @@ function onHeaderButtonClick() {
     updateHeaderUI();
 }
 
+=======
+function initializeLocalStorage() {
+    navVisible = (localStorage.getItem("navVisible")
+                  ?? "true") === "true";
+}
+
+function onHeaderButtonClick() {
+    navVisible = !navVisible;
+    localStorage.setItem("navVisible", navVisible);
+
+    updateHeaderUI();
+}
+
+>>>>>>> dev
 function updateHeaderUI() {
     header.classList.toggle("header-closed", !navVisible);
     main.classList.toggle("main-closed", !navVisible);

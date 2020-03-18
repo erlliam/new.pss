@@ -19,13 +19,15 @@ let loadoutList = {
     "20": "VS Heavy Assault",
     "21": "VS MAX"
 };
-
+// Script in body executed by flask templates
 let sessionEvents = document.getElementById("session-events");
 let sessionButton = document.getElementById("session-button");
 let timeElement = document.getElementById("session-time");
 let kdElement = document.getElementById("session-kd");
 let kpmElement = document.getElementById("session-kpm");
 let session = false;
+let sessionKills;
+let sessionDeaths;
 let timeElapsed;
 let timeInterval;
 let timeContainer;
@@ -33,27 +35,13 @@ let webSocket;
 
 sessionButton.addEventListener("click", () => {
     session = !session;
+    sessionButton.classList.toggle("session-on", session);
+    sessionButton.textContent = session ? "End session" : "Start session";
+
     if (session) {
         startSession();
-
-        timeElapsed = 0;
-        timeContainer = new Date(0);
-
-        timeInterval = setInterval(() => {
-            timeContainer.setTime(timeElapsed);
-            displayTime(timeContainer.toUTCString().split(" ")[4]);
-            timeElapsed += 1000;
-        }, 1000);
-
-        sessionButton.textContent = "End session";
-        sessionButton.classList.toggle("session-on");
     } else {
         endSession();
-
-        clearInterval(timeInterval);
-
-        sessionButton.textContent = "Start session";
-        sessionButton.classList.toggle("session-on");
     }
 });
 
@@ -123,7 +111,23 @@ function populateResultsDiv() {
 }
 
 function startSession() {
+    timeContainer = new Date(0);
+    timeElapsed = 0;
+    sessionKills = 0;
+    sessionDeaths = 0;
+
+    timeElement.textContent = "Time: 00:00:00";
+    kpmElement.textContent = "KPM: 0.0";
+
+    timeInterval = setInterval(() => {
+        timeElapsed += 1000;
+        timeContainer.setTime(timeElapsed);
+        displayTime();
+
+    }, 1000);
+
     webSocket = new WebSocket("wss://push.planetside2.com/streaming?environment=ps2&service-id=s:supafarma");
+
     webSocket.onopen = () => {
         let deathsCommand = {
             service: "event",
@@ -138,70 +142,70 @@ function startSession() {
             message = JSON.parse(message.data);
             if (message.hasOwnProperty("payload")) {
                 handleKillData(message.payload);
-            } else {
             }
         };
     };
 }
 
 function displayTime(sessionTime) {
-    timeElement.textContent = sessionTime;
+    let timeString = timeContainer.toUTCString().split(" ")[4]
+    timeElement.textContent = `Time: ${timeString}`;
+
     let minutesElapsed = timeContainer.getTime()/1000/60;
-    let kpm = (character.sessKills/minutesElapsed).toFixed(1);
+    let kpm = (sessionKills/minutesElapsed).toFixed(1);;
     kpmElement.textContent = `KPM: ${kpm}`;
 }
 
 function endSession() {
     webSocket.close();
+    clearInterval(timeInterval);
 }
 
 function handleKillData(payload) {
     let eventResult, enemyCharacterId, enemyLoadoutId;
+
     if (payload.attacker_character_id == character.character_id) {
+        eventResult = "kill";
+        sessionKills += 1;
+
         enemyCharacterId = payload.character_id;
         enemyLoadoutId = payload.character_loadout_id;
-        eventResult = "kill";
-        character.sessKills += 1;
     } else {
+        eventResult = "death";
+        sessionDeaths += 1;
+
         enemyCharacterId = payload.attacker_character_id;
         enemyLoadoutId = payload.attacker_loadout_id;
-        eventResult = "death";
-        character.sessDeaths += 1;
     }
 
-    let characterUrl = `character/?character_id=${enemyCharacterId}&c:show=character_id,name.first,battle_rank.value,prestige_level&c:join=characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats&c:tree=start:stats^field:stat_name`;
-    let weapUrl = `item/?item_id=${payload.attacker_weapon_id}&c:show=name.en,image_path`;
+    let enemyCharacterUrl = `character/?character_id=${enemyCharacterId}&c:show=character_id,name.first,battle_rank.value,prestige_level&c:join=characters_stat_history^list:1^terms:stat_name=kills'stat_name=deaths^show:stat_name'all_time^inject_at:stats&c:tree=start:stats^field:stat_name`;
+    let weapUrl = `item/?item_id=${payload.attacker_weapon_id}&c:show=name.en`;
 
     let killData = {
-        // Kill or death
         eventResult: eventResult,
         loadout: loadoutList[enemyLoadoutId]
     };
 
     // TODO Convert these things to check is the object exists properly..
-    getJSON(characterUrl, (data) => {
-
+    getJSON(enemyCharacterUrl, (data) => {
+        // returned can be 0 or > 0 
+        // perhaps we don't care what returned is, as we already handle the data not existing.
         if (data.returned) {
             let rawChar = (data.character_list ?? [])[0] ?? {};
+            let kills = ((rawChar.stats ?? {}).kills ?? {}).all_time ?? 0;
+            let deaths = ((rawChar.stats ?? {}).deaths ?? {}).all_time ?? 0;
             killData.name = (rawChar.name ?? {}).first ?? "N/A";
             killData.level = (rawChar.battle_rank ?? {}).value ?? "N/A";
             killData.prestige = rawChar.prestige_level ?? "N/A";
-            let kills = ((rawChar.stats ?? {}).kills ?? {}).all_time ?? 0;
-            let deaths = ((rawChar.stats ?? {}).deaths ?? {}).all_time ?? 0;
             killData.kd = (kills/deaths).toFixed(1);
         }
         getJSON(weapUrl, (data) => {
             if (data.returned) {
                 let rawWeapon = (data.item_list ?? [])[0] ?? {};
                 killData.weapName = (rawWeapon.name ?? {}).en ?? "N/A";
-                // A default url when name isn't found. N/A is bad.
-                let image_path = rawWeapon.image_path ?? "N/A";
-                killData.weapImgUrl = baseUrl+image_path;
                 displayKillData(killData);
-            } else { 
-            // In the case the api's item fetching isn't returning data properly...
-                killData.weapName = "N/A";
-                killData.image_path = "N/A";
+            } else {
+                killData.weapName = "API Problems";
                 displayKillData(killData);
             }
         });
@@ -210,12 +214,15 @@ function handleKillData(payload) {
 
 function displayKillData(killData) {
     let div = document.createElement("div");
-    div.className = killData.eventResult + " event";
+    div.className = `${killData.eventResult} event`;
+    let killDataString = 
     div.textContent = Object.values(killData).join(", ");
 
     sessionEvents.insertBefore(div, sessionEvents.childNodes[0]);
-    let kd = (character.sessKills/character.sessDeaths).toFixed(1);
 
-    kdElement.textContent = `Kills: ${character.sessKills},
-                             Deaths:${character.sessDeaths}, KD: ${kd}`;
+    let kd = (sessionKills/sessionDeaths).toFixed(1);
+    kd = isFinite(kd) ? kd : sessionKills;
+
+    kdElement.textContent = `Kills: ${sessionKills},
+                             Deaths:${sessionDeaths}, KD: ${kd}`;
 }
