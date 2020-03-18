@@ -6,9 +6,7 @@ let header;
 let headerButton;
 let main;
 // stuff
-=======
 let localStorage = window.localStorage;
->>>>>>> dev
 let navVisible;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,46 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     headerButton = document.getElementById("header-button");
     main = document.getElementById("main");
 
-    initializeCookies();
-    updateHeaderUI();
-
-    headerButton.addEventListener("click", onHeaderButtonClick);
-=======
     initializeLocalStorage()
     updateHeaderUI();
->>>>>>> dev
 
     headerButton.addEventListener("click", onHeaderButtonClick);
 });
 
-function initializeCookies() {
-    let cookies = Object.fromEntries(
-        document.cookie.split(";").map((entry) => {
-            let [key, value] = entry.split("=", 2);
-            // No cookies means value will be undefined
-            // Trim can't be run on undefined, perhaps use error catching?
-            if (value === undefined) {
-                value = "";
-            }
-            return [key.trim(), value.trim()];
-        })
-    );
-
-    if (cookies.hasOwnProperty("navVisible")) {
-        navVisible = Number(cookies.navVisible);
-    } else {
-        document.cookie = "navVisible=1";
-        navVisible = 1;
-    }
-}
-
-function onHeaderButtonClick() {
-    navVisible = Number(!navVisible);
-    document.cookie = `navVisible=${navVisible}`;
-    updateHeaderUI();
-}
-
-=======
 function initializeLocalStorage() {
     navVisible = (localStorage.getItem("navVisible")
                   ?? "true") === "true";
@@ -68,7 +32,6 @@ function onHeaderButtonClick() {
     updateHeaderUI();
 }
 
->>>>>>> dev
 function updateHeaderUI() {
     header.classList.toggle("header-closed", !navVisible);
     main.classList.toggle("main-closed", !navVisible);
