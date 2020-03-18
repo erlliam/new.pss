@@ -5,8 +5,18 @@
     --c-child: #363636;
     --c-button: #977E08;
     --c-text-light: #F0F0F0;
-    --c-text-dark: ;
+    --c-text-dark: #0F0F0F;
     --c-button: #EBC302;
+}
+
+button {
+    background-color: var(--c-button);
+    color: var(--c-text-dark);
+    border: 0;
+    padding: 8px 16px;
+}
+button:hover {
+    filter: brightness(200%);
 }
 
 * {
@@ -33,10 +43,8 @@ header * {
     outline-offset: -1px;
 }
 
+
 header > button {
-    background-color: var(--c-button);
-    border: 0;
-    font-weight: 900;
     top: 0;
     display: block;
     margin: 30px auto 10px auto;
@@ -189,34 +197,48 @@ main {
 }
 
 #session {
+    background-color: var(--c-header);
     grid-area: session;
     position: relative;
     overflow: auto;
 }
 
+#session-overall {
+    padding: 5px;
+}
+#session-events {
+    padding: 5px;
+}
+
+
+#session-time,
+#session-kd,
+#session-kpm {
+    color: var(--c-text-light);
+    font-size: 1.5em;
+}
+
 #session-button {
     box-sizing: border-box;
-    width: 150px;
-    height: 30px;
-    padding: 0;
+    font-size: 1.1em;
     border: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: auto;
+    display: block;
 }
+
 
 .session-on {
     display: block;
-    margin: 5px auto;
+    margin: auto;
     position: static !important;
     transform: none !important;
 }
 
 .event {
-    padding-left: 30px;
     border-radius: 8px;
-    margin-bottom: 2px;
+    margin: 5px;
+    padding: 10px;
+    font-size: 1.2em;
 }
 
 .kill {

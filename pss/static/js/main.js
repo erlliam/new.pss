@@ -6,62 +6,39 @@ let header;
 let headerButton;
 let main;
 // stuff
-let cookies = {};
-let headerButtonText = {
-    0: "Maximize",
-    1: "Minimize"
-};
+let localStorage = window.localStorage;
+let navVisible;
 
 document.addEventListener("DOMContentLoaded", () => {
     header = document.getElementById("header");
     headerButton = document.getElementById("header-button");
     main = document.getElementById("main");
 
-    initializeCookies();
-    initializeNavbar();
+    initializeLocalStorage()
+    updateHeaderUI();
 
-    headerButton.addEventListener("click", navbarLogic);
-
+    headerButton.addEventListener("click", onHeaderButtonClick);
 });
 
-function initializeCookies() {
-    cookies = Object.fromEntries(
-        document.cookie.split(";").map((entry) => {
-            let [key, value] = entry.split("=", 2);
-            // No cookies means value will be undefined
-            // Trim can't be run on undefined, perhaps use error catching?
-            if (value === undefined) {
-                value = "";
-            }
-            return [key.trim(), value.trim()];
-        })
-    );
-
-    if (!cookies.hasOwnProperty("navState")) {
-        document.cookie = "navState=1";
-    }
+function initializeLocalStorage() {
+    navVisible = (localStorage.getItem("navVisible")
+                  ?? "true") === "true";
 }
 
-function initializeNavbar() {
-    if (!Number(cookies.navState)) {
-        header.classList.toggle("header-closed");
-        main.classList.toggle("main-closed");
-        headerButton.classList.toggle("header-button-closed");
-        headerButton.textContent = "Maximize";
-    }
+function onHeaderButtonClick() {
+    navVisible = !navVisible;
+    localStorage.setItem("navVisible", navVisible);
+
+    updateHeaderUI();
 }
 
-function navbarLogic() {
-    cookies.navState = Number(!cookies.navState);
-    document.cookie = `navState=${Number(cookies.navState)}`
+function updateHeaderUI() {
+    header.classList.toggle("header-closed", !navVisible);
+    main.classList.toggle("main-closed", !navVisible);
+    headerButton.classList.toggle("header-button-closed", !navVisible);
 
-    header.classList.toggle("header-closed");
-    main.classList.toggle("main-closed");
-    headerButton.classList.toggle("header-button-closed");
-
-    headerButton.textContent = headerButtonText[cookies.navState];
+    headerButton.textContent = navVisible ? "Minimize" : "Maximize";
 }
-
 
 function getJSON(url, callback) {
     let request = new Request(apiUrl + url);
