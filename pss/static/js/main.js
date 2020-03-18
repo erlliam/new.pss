@@ -6,8 +6,7 @@ let header;
 let headerButton;
 let main;
 // stuff
-let cookies = {};
-let navbarVisible;
+let navVisible;
 
 document.addEventListener("DOMContentLoaded", () => {
     header = document.getElementById("header");
@@ -15,14 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
     main = document.getElementById("main");
 
     initializeCookies();
-    initializeNavbar();
+    updateHeaderUI();
 
-    headerButton.addEventListener("click", navbarLogic);
+    headerButton.addEventListener("click", onHeaderButtonClick);
 
 });
 
 function initializeCookies() {
-    cookies = Object.fromEntries(
+    let cookies = Object.fromEntries(
         document.cookie.split(";").map((entry) => {
             let [key, value] = entry.split("=", 2);
             // No cookies means value will be undefined
@@ -33,43 +32,28 @@ function initializeCookies() {
             return [key.trim(), value.trim()];
         })
     );
-    if ("navState" in cookies) {
-        navbarVisible = parseInt(cookies.nav_state) ?
-                  true :
-                  false;
+
+    if (cookies.hasOwnProperty("navVisible")) {
+        navVisible = Number(cookies.navVisible);
     } else {
-        // cookie doesn't exist.
-        document.cookie = "navState=1";
-        navbarVisible = true;
+        document.cookie = "navVisible=1";
+        navVisible = 1;
     }
 }
 
-function initializeNavbar() {
-    if (!navbarVisible) {
-        header.classList.toggle("header-closed");
-        main.classList.toggle("main-closed");
-        headerButton.classList.toggle("header-button-closed");
-        headerButton.textContent = "Maximize";
-    }
+function onHeaderButtonClick() {
+    navVisible = Number(!navVisible);
+    document.cookie = `navVisible=${navVisible}`;
+    updateHeaderUI();
 }
 
-function navbarLogic() {
-    navbarVisible = !navbarVisible;
-    document.cookie = `navState=${Number(navbarVisible)}`
+function updateHeaderUI() {
+    header.classList.toggle("header-closed", !navVisible);
+    main.classList.toggle("main-closed", !navVisible);
+    headerButton.classList.toggle("header-button-closed", !navVisible);
 
-    header.classList.toggle("header-closed");
-    main.classList.toggle("main-closed");
-    headerButton.classList.toggle("header-button-closed");
-
-    // array with navbar state text? no more if statement
-    // just use navbarvisible as a number..
-    if (navbarVisible) {
-        headerButton.textContent = "Minimize";
-    } else {
-        headerButton.textContent = "Maximize";
-    }
+    headerButton.textContent = navVisible ? "Minimize" : "Maximize";
 }
-
 
 function getJSON(url, callback) {
     let request = new Request(apiUrl + url);
