@@ -1,20 +1,28 @@
 {% extends 'layout.html' %}
 {% block title %}Index{% endblock %}
 {% block main %}
-    <div class="main-div">
-        <div class="search">
+    <div id="main-div">
+        <div id="search">
             <form methods="GET">
                 <label>Outfit Name</label>
                 <input id="char-name" type="text" name="name" placeholder="Name"
                 value={{ request.args.get('name', '') }}>
-                <button type="submit">Search</button>
+                <button id="char-search" type="submit">Search</button>
             </form>
         </div>
-        <div id="results" class="results">
-            <div id="main-stuff"></div>
-            <div id="players"></div>
+        <div id="results">
+            <div id="outfit-info"></div>
+            <div id="outfit-players"></div>
         </div>
         <div id="session" class="session">
+            <button id="session-button">Start Session</button>
+            <div id="session-overall">
+                <div id="session-time">Time: 00:00:00</div>
+                <div id="session-kpm">Outfit KPM</div>
+                <div id="session-kd">Outfit Kills: 0, Outfit Deaths: 0, Outfit KD: 0.0</div>
+            </div>
+            <div id="session-events">
+            </div>
         </div>
         {% if request.args.get('name') %}
             <script src="{{ url_for('static', filename='js/outfit.js') }}"></script>

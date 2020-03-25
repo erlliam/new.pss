@@ -36,7 +36,7 @@
         {% if request.args.get('name') %}
             <script src="{{ url_for('static', filename='js/char.js') }}"></script>
             <script>
-                initializeCharacter("{{ request.args.get('name', '') }}");
+                searchForCharacter("{{ request.args.get('name', '') }}");
             </script>
         {% endif %}
     </div>
